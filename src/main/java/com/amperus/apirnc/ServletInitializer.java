@@ -1,4 +1,4 @@
-package com.amperus.apirnc.adapters.primary.springboot;
+package com.amperus.apirnc;
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;

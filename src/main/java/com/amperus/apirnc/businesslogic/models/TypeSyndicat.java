@@ -1,4 +1,4 @@
-package com.amperus.apirnc.businesslogic.model;
+package com.amperus.apirnc.businesslogic.models;
 
 public enum TypeSyndicat {
 	BENEVOLE,
