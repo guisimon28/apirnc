@@ -1,9 +1,9 @@
 package com.amperus.apirnc.businesslogic.models;
 
-public record InformationCadastrale(String reference, long codeINSEECommune, String prefixe, String section, String numeroParcelle) {
+public record InformationCadastrale(String reference, String codeINSEECommune, String prefixe, String section, String numeroParcelle) {
 	public static class Builder {
 		private String reference;
-		private long codeINSEECommune;
+		private String codeINSEECommune;
 		private String prefixe;
 		private String section;
 		private String numeroParcelle;
@@ -13,7 +13,7 @@ public record InformationCadastrale(String reference, long codeINSEECommune, Str
 			return this;
 		}
 
-		public Builder codeINSEECommune(long codeINSEECommune) {
+		public Builder codeINSEECommune(String codeINSEECommune) {
 			this.codeINSEECommune = codeINSEECommune;
 			return this;
 		}

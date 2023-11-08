@@ -16,7 +16,7 @@ public class ImportRegistreNationalCopropriete {
 		this.coproprieteRepository = coproprieteRepository;
 	}
 
-	public void handle(){
+	public void handle(String filePath){
 		List<Copropriete> coproprietes = rncDataProvider.findAllCopropriete();
 		coproprieteRepository.saveAll(coproprietes);
 	}

@@ -20,7 +20,4 @@ public record Region(String codeOfficiel, String nomOfficiel) {
 		}
 	}
 
-	public static Builder builder() {
-		return new Builder();
-	}
 }

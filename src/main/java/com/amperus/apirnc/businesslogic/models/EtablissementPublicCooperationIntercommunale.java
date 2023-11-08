@@ -2,12 +2,12 @@ package com.amperus.apirnc.businesslogic.models;
 
 public record EtablissementPublicCooperationIntercommunale(String siret, String codeOfficiel, String nomOfficiel) {
 	public static class Builder {
-		private String siret;
+		private String siren;
 		private String codeOfficiel;
 		private String nomOfficiel;
 
-		public Builder siret(String siret) {
-			this.siret = siret;
+		public Builder siren(String siren) {
+			this.siren = siren;
 			return this;
 		}
 
@@ -22,11 +22,8 @@ public record EtablissementPublicCooperationIntercommunale(String siret, String 
 		}
 
 		public EtablissementPublicCooperationIntercommunale build() {
-			return new EtablissementPublicCooperationIntercommunale(siret, codeOfficiel, nomOfficiel);
+			return new EtablissementPublicCooperationIntercommunale(siren, codeOfficiel, nomOfficiel);
 		}
 	}
 
-	public static Builder builder() {
-		return new Builder();
-	}
 }

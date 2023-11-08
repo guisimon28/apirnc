@@ -20,7 +20,4 @@ public record QuartierPrioritaire(String nom, String code) {
 		}
 	}
 
-	public static Builder builder() {
-		return new Builder();
-	}
 }

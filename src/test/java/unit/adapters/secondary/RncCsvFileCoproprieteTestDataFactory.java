@@ -1,6 +1,7 @@
-package unit.usecases;
+package unit.adapters.secondary;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 
 import com.amperus.apirnc.businesslogic.models.Adresse;
@@ -19,13 +20,13 @@ import com.amperus.apirnc.businesslogic.models.Syndicat;
 import com.amperus.apirnc.businesslogic.models.TypeSyndicat;
 import com.amperus.apirnc.businesslogic.models.Ville;
 
-class CoproprieteTestDataFactory {
+class RncCsvFileCoproprieteTestDataFactory {
 
 	public static EtablissementPublicCooperationIntercommunale.Builder anEPCI() {
 		return new EtablissementPublicCooperationIntercommunale.Builder()
-				.siren("123456789")
-				.codeOfficiel("EPCI001")
-				.nomOfficiel("EPCI A");
+				.siren("246900724")
+				.codeOfficiel("246900724")
+				.nomOfficiel("CC des Vallons du Lyonnais (CCVL)");
 	}
 
 	public static RepresentantLegal.Builder aRepresentantLegal() {
@@ -50,22 +51,16 @@ class CoproprieteTestDataFactory {
 
 	public static Lots.Builder aLots() {
 		return new Lots.Builder()
-				.nombreTotal(100)
-				.nombreUsageHabitationBureauxCommerces(50)
-				.nombreUsageHabitation(30)
-				.nombreStationnement(20);
+				.nombreTotal(202)
+				.nombreUsageHabitationBureauxCommerces(67)
+				.nombreUsageHabitation(67)
+				.nombreStationnement(72);
 	}
 
 	public static Cadastre.Builder aCadastre() {
 		return new Cadastre.Builder()
-				.informations(List.of(new InformationCadastrale.Builder()
-						.reference("Ref1")
-						.codeINSEECommune("12345")
-						.prefixe("A")
-						.section("A1")
-						.numeroParcelle("001")
-						.build()))
-				.nombreParcelles(1);
+				.informations(Collections.emptyList())
+				.nombreParcelles(0);
 	}
 
 	public static QuartierPrioritaire.Builder aQuartierPrioritaire() {
@@ -76,18 +71,18 @@ class CoproprieteTestDataFactory {
 
 	public static Ville.Builder aVille() {
 		return new Ville.Builder()
-				.codeOfficiel("12345")
-				.nomOfficiel("Ville A")
-				.codeOfficielArrondissement("A1")
-				.nomOfficielArrondissement("Arrondissement 1")
-				.departement(new Departement("D123", "Département A"))
-				.region(new Region("R123", "Région A"));
+				.codeOfficiel("69094")
+				.nomOfficiel("Grézieu-la-Varenne")
+				.codeOfficielArrondissement("69094")
+				.nomOfficielArrondissement("Grézieu-la-Varenne")
+				.departement(new Departement.Builder().codeOfficiel("69").nomOfficiel("Rhône").build())
+				.region(new Region.Builder().codeOfficiel("84").nomOfficiel("Auvergne-Rhône-Alpes").build());
 	}
 
 	public static Adresse.Builder anAdresse() {
 		return new Adresse.Builder()
-				.numeroEtVoie("123 Rue de la Copropriété")
-				.codePostal("75000")
+				.numeroEtVoie("1 r des forges")
+				.codePostal("69290")
 				.ville(aVille().build());
 	}
 
@@ -111,16 +106,12 @@ class CoproprieteTestDataFactory {
 
 	public static Copropriete.Builder aCopropriete() {
 		return new Copropriete.Builder()
-				.numeroImmatriculation("12345")
-				.nomUsage("Copropriété A")
+				.numeroImmatriculation("AA0002402")
+				.nomUsage("LES JARDINS DE JUSTINE")
 				.epci(anEPCI().build())
-				.syndicat(aSyndicat().build())
-				.lots(aLots().build())
 				.cadastre(aCadastre().build())
-				.quartierPrioritaire(aQuartierPrioritaire().build())
 				.adresse(anAdresse().build())
-				.caracteristique(aCaracteristique().build())
-				.arretes(anArretes().build());
+				.lots(aLots().build());
 	}
 
 }

@@ -32,7 +32,4 @@ public record Lots(int nombreTotal, int nombreUsageHabitationBureauxCommerces, i
 		}
 	}
 
-	public static Builder builder() {
-		return new Builder();
-	}
 }
