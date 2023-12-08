@@ -17,11 +17,18 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    testImplementation 'junit:junit:4.13.1'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation group: 'org.apache.commons', name: 'commons-csv', version: '1.10.0'
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.14.0'
+    implementation group: 'org.postgresql', name: 'postgresql', version: '42.7.1'
+
     providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-    implementation group: 'org.apache.commons', name: 'commons-csv', version: '1.10.0'
+    testImplementation group: "org.testcontainers", name: 'testcontainers', version: "${testcontainersVersion}"
+    testImplementation group: "org.testcontainers", name: 'postgresql', version: "${testcontainersVersion}"
+    testImplementation group: 'org.testcontainers', name: 'junit-jupiter', version: "${testcontainersVersion}"
 
     testImplementation group: 'org.assertj', name: 'assertj-core', version: "${assertJVersion}"
     testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: "${junitVersion}"

@@ -1,4 +1,4 @@
-package com.amperus.prospection.adapters.secondary.rncDataProvision;
+package com.amperus.prospection.adapters.secondary.rncprovision;
 
 import com.amperus.prospection.businesslogic.gateways.rncDataProvision.RncDataProvider;
 import com.amperus.prospection.businesslogic.models.*;
