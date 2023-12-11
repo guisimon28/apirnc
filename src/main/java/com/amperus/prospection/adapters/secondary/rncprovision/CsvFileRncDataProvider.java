@@ -155,14 +155,16 @@ public class CsvFileRncDataProvider implements RncDataProvider {
     }
 
     private Ville getVilleFromRecord(CSVRecord csvRecord) {
-        Departement departement = new Departement.Builder()
-                .codeOfficiel(csvRecord.get("Code Officiel Département"))
-                .nomOfficiel(csvRecord.get("Nom Officiel Département"))
-                .build();
 
         Region region = new Region.Builder()
                 .codeOfficiel(csvRecord.get("Code Officiel Région"))
                 .nomOfficiel(csvRecord.get("Nom Officiel Région"))
+                .build();
+
+        Departement departement = new Departement.Builder()
+                .codeOfficiel(csvRecord.get("Code Officiel Département"))
+                .nomOfficiel(csvRecord.get("Nom Officiel Département"))
+                .region(region)
                 .build();
 
         return new Ville.Builder()
@@ -171,7 +173,6 @@ public class CsvFileRncDataProvider implements RncDataProvider {
                 .codeOfficielArrondissement(csvRecord.get("Code Officiel Arrondissement Commune"))
                 .nomOfficielArrondissement(csvRecord.get("Nom Officiel Arrondissement Commune"))
                 .departement(departement)
-                .region(region)
                 .build();
     }
 

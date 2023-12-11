@@ -15,6 +15,8 @@ public class CoproprieteMapper {
         CoproprieteJpaEntity coproprieteJpaEntity = new CoproprieteJpaEntity();
         coproprieteJpaEntity.setNomUsage(copropriete.nomUsage());
         coproprieteJpaEntity.setNumeroImmatriculation(copropriete.numeroImmatriculation());
+        coproprieteJpaEntity.setAdresseJpaEntity(AdresseMapper.convert(copropriete.adresse()));
+        coproprieteJpaEntity.setVille(VilleMapper.convert(copropriete.adresse().ville()));
         return coproprieteJpaEntity;
     }
 }

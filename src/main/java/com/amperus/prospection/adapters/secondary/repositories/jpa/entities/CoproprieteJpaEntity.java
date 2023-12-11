@@ -1,9 +1,7 @@
 package com.amperus.prospection.adapters.secondary.repositories.jpa.entities;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.util.UUID;
 
@@ -12,9 +10,12 @@ public class CoproprieteJpaEntity {
     @Id
     @GeneratedValue
     private UUID id;
-
     private String numeroImmatriculation;
     private String nomUsage;
+    @Embedded
+    private AdresseJpaEntity adresseJpaEntity;
+    @ManyToOne
+    private VilleJpaEntity ville;
 
     public UUID getId() {
         return id;
@@ -38,5 +39,32 @@ public class CoproprieteJpaEntity {
 
     public void setNomUsage(String nomUsage) {
         this.nomUsage = nomUsage;
+    }
+
+    public AdresseJpaEntity getAdresseJpaEntity() {
+        return adresseJpaEntity;
+    }
+
+    public void setAdresseJpaEntity(AdresseJpaEntity adresseJpaEntity) {
+        this.adresseJpaEntity = adresseJpaEntity;
+    }
+
+    public VilleJpaEntity getVille() {
+        return ville;
+    }
+
+    public void setVille(VilleJpaEntity ville) {
+        this.ville = ville;
+    }
+
+    @Override
+    public String toString() {
+        return "CoproprieteJpaEntity{" +
+                "id=" + id +
+                ", numeroImmatriculation='" + numeroImmatriculation + '\'' +
+                ", nomUsage='" + nomUsage + '\'' +
+                ", adresseJpaEntity=" + adresseJpaEntity +
+                ", ville=" + ville +
+                '}';
     }
 }

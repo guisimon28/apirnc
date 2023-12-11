@@ -12,7 +12,7 @@ public abstract class TestContainers {
             .withPassword("inmemory")
             .withUsername("inmemory")
             .withUrlParam("stringtype", "unspecified")
-            .withInitScript("schema-ddl.sql");
+            .withInitScript("prospection-ddl.sql");
 
     static {
         postgreSQLContainer.start();

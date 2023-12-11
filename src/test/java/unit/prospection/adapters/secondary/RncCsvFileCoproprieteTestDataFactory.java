@@ -46,13 +46,14 @@ class RncCsvFileCoproprieteTestDataFactory {
     }
 
     public static Ville.Builder aVille() {
+        Region region = new Region.Builder().codeOfficiel("84").nomOfficiel("Auvergne-Rhône-Alpes").build();
+        Departement departement = new Departement.Builder().codeOfficiel("69").nomOfficiel("Rhône").region(region).build();
         return new Ville.Builder()
                 .codeOfficiel("69094")
                 .nomOfficiel("Grézieu-la-Varenne")
                 .codeOfficielArrondissement("69094")
                 .nomOfficielArrondissement("Grézieu-la-Varenne")
-                .departement(new Departement.Builder().codeOfficiel("69").nomOfficiel("Rhône").build())
-                .region(new Region.Builder().codeOfficiel("84").nomOfficiel("Auvergne-Rhône-Alpes").build());
+                .departement(departement);
     }
 
     public static Adresse.Builder anAdresse() {

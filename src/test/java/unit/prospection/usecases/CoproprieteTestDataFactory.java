@@ -52,13 +52,14 @@ class CoproprieteTestDataFactory {
     }
 
     public static Ville.Builder aVille() {
+        Region region = new Region.Builder().codeOfficiel("R123").nomOfficiel("Région A").build();
+        Departement departement = new Departement.Builder().codeOfficiel("D123").nomOfficiel("Département A").region(region).build();
         return new Ville.Builder()
                 .codeOfficiel("12345")
                 .nomOfficiel("Ville A")
                 .codeOfficielArrondissement("A1")
                 .nomOfficielArrondissement("Arrondissement 1")
-                .departement(new Departement("D123", "Département A"))
-                .region(new Region("R123", "Région A"));
+                .departement(departement);
     }
 
     public static Adresse.Builder anAdresse() {
