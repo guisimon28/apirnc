@@ -84,10 +84,10 @@ class CoproprieteTestDataFactory {
                 .numeroImmatriculation("12345")
                 .nomUsage("Copropriété A")
                 //.mandat(aMandat().build())
-                //.lots(aLots().build())
+                .lots(aLots().build())
                 //.cadastre(aCadastre().build())
-                .adresse(anAdresse().build());
-        //.caracteristique(aCaracteristique().build());
+                .adresse(anAdresse().build())
+                .caracteristique(aCaracteristique().build());
     }
 
 }

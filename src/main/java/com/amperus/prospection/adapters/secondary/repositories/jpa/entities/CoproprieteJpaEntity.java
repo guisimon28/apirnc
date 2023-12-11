@@ -3,6 +3,7 @@ package com.amperus.prospection.adapters.secondary.repositories.jpa.entities;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity(name = "coproprietes")
@@ -12,6 +13,17 @@ public class CoproprieteJpaEntity {
     private UUID id;
     private String numeroImmatriculation;
     private String nomUsage;
+    private LocalDate dateReglement;
+    private boolean residenceService;
+    @Enumerated(EnumType.STRING)
+    private PeriodeConstructionRangeJpaEnum periodeConstruction;
+    private boolean dansActionCoeurDeVille;
+    private boolean dansPetiteVilleDeDemain;
+    private boolean aidee;
+    private int nombreLotTotal;
+    private int nombreLotUsageHabitationBureauxCommerces;
+    private int nombreLotUsageHabitation;
+    private int nombreLotStationnement;
     @Embedded
     private AdresseJpaEntity adresseJpaEntity;
     @ManyToOne
@@ -41,6 +53,86 @@ public class CoproprieteJpaEntity {
         this.nomUsage = nomUsage;
     }
 
+    public LocalDate getDateReglement() {
+        return dateReglement;
+    }
+
+    public void setDateReglement(LocalDate dateReglement) {
+        this.dateReglement = dateReglement;
+    }
+
+    public boolean isResidenceService() {
+        return residenceService;
+    }
+
+    public void setResidenceService(boolean residenceService) {
+        this.residenceService = residenceService;
+    }
+
+    public PeriodeConstructionRangeJpaEnum getPeriodeConstruction() {
+        return periodeConstruction;
+    }
+
+    public void setPeriodeConstruction(PeriodeConstructionRangeJpaEnum periodeConstruction) {
+        this.periodeConstruction = periodeConstruction;
+    }
+
+    public boolean isDansActionCoeurDeVille() {
+        return dansActionCoeurDeVille;
+    }
+
+    public void setDansActionCoeurDeVille(boolean dansActionCoeurDeVille) {
+        this.dansActionCoeurDeVille = dansActionCoeurDeVille;
+    }
+
+    public boolean isDansPetiteVilleDeDemain() {
+        return dansPetiteVilleDeDemain;
+    }
+
+    public void setDansPetiteVilleDeDemain(boolean dansPetiteVilleDeDemain) {
+        this.dansPetiteVilleDeDemain = dansPetiteVilleDeDemain;
+    }
+
+    public boolean isAidee() {
+        return aidee;
+    }
+
+    public void setAidee(boolean aidee) {
+        this.aidee = aidee;
+    }
+
+    public int getNombreLotTotal() {
+        return nombreLotTotal;
+    }
+
+    public void setNombreLotTotal(int nombreLotTotal) {
+        this.nombreLotTotal = nombreLotTotal;
+    }
+
+    public int getNombreLotUsageHabitationBureauxCommerces() {
+        return nombreLotUsageHabitationBureauxCommerces;
+    }
+
+    public void setNombreLotUsageHabitationBureauxCommerces(int nombreLotUsageHabitationBureauxCommerces) {
+        this.nombreLotUsageHabitationBureauxCommerces = nombreLotUsageHabitationBureauxCommerces;
+    }
+
+    public int getNombreLotUsageHabitation() {
+        return nombreLotUsageHabitation;
+    }
+
+    public void setNombreLotUsageHabitation(int nombreLotUsageHabitation) {
+        this.nombreLotUsageHabitation = nombreLotUsageHabitation;
+    }
+
+    public int getNombreLotStationnement() {
+        return nombreLotStationnement;
+    }
+
+    public void setNombreLotStationnement(int nombreLotStationnement) {
+        this.nombreLotStationnement = nombreLotStationnement;
+    }
+
     public AdresseJpaEntity getAdresseJpaEntity() {
         return adresseJpaEntity;
     }
@@ -63,6 +155,12 @@ public class CoproprieteJpaEntity {
                 "id=" + id +
                 ", numeroImmatriculation='" + numeroImmatriculation + '\'' +
                 ", nomUsage='" + nomUsage + '\'' +
+                ", dateReglement=" + dateReglement +
+                ", residenceService=" + residenceService +
+                ", periodeConstruction=" + periodeConstruction +
+                ", dansActionCoeurDeVille=" + dansActionCoeurDeVille +
+                ", dansPetiteVilleDeDemain=" + dansPetiteVilleDeDemain +
+                ", aidee=" + aidee +
                 ", adresseJpaEntity=" + adresseJpaEntity +
                 ", ville=" + ville +
                 '}';
