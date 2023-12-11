@@ -4,6 +4,7 @@ package com.amperus.prospection.adapters.secondary.repositories.jpa.entities;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Entity(name = "coproprietes")
@@ -28,6 +29,8 @@ public class CoproprieteJpaEntity {
     private AdresseJpaEntity adresseJpaEntity;
     @ManyToOne
     private VilleJpaEntity ville;
+    @OneToMany(mappedBy = "copropriete")
+    private List<MandatJpaEntity> mandats;
 
     public UUID getId() {
         return id;
@@ -149,6 +152,14 @@ public class CoproprieteJpaEntity {
         this.ville = ville;
     }
 
+    public List<MandatJpaEntity> getMandats() {
+        return mandats;
+    }
+
+    public void setMandats(List<MandatJpaEntity> mandats) {
+        this.mandats = mandats;
+    }
+
     @Override
     public String toString() {
         return "CoproprieteJpaEntity{" +
@@ -161,6 +172,10 @@ public class CoproprieteJpaEntity {
                 ", dansActionCoeurDeVille=" + dansActionCoeurDeVille +
                 ", dansPetiteVilleDeDemain=" + dansPetiteVilleDeDemain +
                 ", aidee=" + aidee +
+                ", nombreLotTotal=" + nombreLotTotal +
+                ", nombreLotUsageHabitationBureauxCommerces=" + nombreLotUsageHabitationBureauxCommerces +
+                ", nombreLotUsageHabitation=" + nombreLotUsageHabitation +
+                ", nombreLotStationnement=" + nombreLotStationnement +
                 ", adresseJpaEntity=" + adresseJpaEntity +
                 ", ville=" + ville +
                 '}';

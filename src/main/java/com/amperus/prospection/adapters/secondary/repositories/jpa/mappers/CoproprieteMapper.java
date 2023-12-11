@@ -19,12 +19,13 @@ public class CoproprieteMapper {
         CoproprieteJpaEntity coproprieteJpaEntity = new CoproprieteJpaEntity();
         coproprieteJpaEntity.setNomUsage(copropriete.nomUsage());
         coproprieteJpaEntity.setNumeroImmatriculation(copropriete.numeroImmatriculation());
+        coproprieteJpaEntity.setAdresseJpaEntity(AdresseMapper.convert(copropriete.adresse()));
+        coproprieteJpaEntity.setVille(AdresseMapper.convert(copropriete.adresse().ville()));
         updateCaracteristique(coproprieteJpaEntity, copropriete.caracteristique());
         updateLots(coproprieteJpaEntity, copropriete.lots());
-        coproprieteJpaEntity.setAdresseJpaEntity(AdresseMapper.convert(copropriete.adresse()));
-        coproprieteJpaEntity.setVille(VilleMapper.convert(copropriete.adresse().ville()));
         return coproprieteJpaEntity;
     }
+
 
     private static void updateCaracteristique(CoproprieteJpaEntity coproprieteJpaEntity, Caracteristique caracteristique) {
         if (caracteristique == null) {

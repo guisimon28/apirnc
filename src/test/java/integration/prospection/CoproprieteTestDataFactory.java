@@ -66,6 +66,7 @@ class CoproprieteTestDataFactory {
         return new Adresse.Builder()
                 .numeroEtVoie("123 Rue de la Copropriété")
                 .codePostal("75000")
+                .coordonneesGeographiques(new CoordonneesGeographiques(-122.254775, 37.869085))
                 .ville(aVille().build());
     }
 
@@ -83,7 +84,7 @@ class CoproprieteTestDataFactory {
         return new Copropriete.Builder()
                 .numeroImmatriculation("12345")
                 .nomUsage("Copropriété A")
-                //.mandat(aMandat().build())
+                .mandat(aMandat().build())
                 .lots(aLots().build())
                 //.cadastre(aCadastre().build())
                 .adresse(anAdresse().build())

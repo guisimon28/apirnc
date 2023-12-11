@@ -42,3 +42,25 @@ CREATE TABLE coproprietes (
     ville_id UUID,
     FOREIGN KEY (ville_id) REFERENCES villes(id)
 );
+
+CREATE TABLE syndicats (
+    id UUID PRIMARY KEY,
+    type VARCHAR(255),
+    nom VARCHAR(255),
+    siret VARCHAR(255),
+    code_ape VARCHAR(255),
+    cooperatif boolean default false,
+    nombre_association_syndicale_libre INT,
+    nombre_association_fonciere_urbaine_libre INT,
+    nombre_unions_syndicats INT
+);
+
+CREATE TABLE mandats (
+    copropriete_id UUID,
+    syndicat_id UUID,
+    statut VARCHAR(255),
+
+    PRIMARY KEY (copropriete_id, syndicat_id),
+    FOREIGN KEY (copropriete_id) REFERENCES coproprietes(id),
+    FOREIGN KEY (syndicat_id) REFERENCES syndicats(id)
+);
