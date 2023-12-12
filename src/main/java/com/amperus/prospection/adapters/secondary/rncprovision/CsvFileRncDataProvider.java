@@ -13,17 +13,18 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 public class CsvFileRncDataProvider implements RncDataProvider {
 
     private URL csvFileUrl;
 
-    public void setCsvFileUrl(URL csvFileUrl) {
-        this.csvFileUrl = csvFileUrl;
-    }
-
     private static final Map<String, PeriodeConstructionRange> mappingPeriodeConstructionRange;
+
+    private static final Logger LOGGER = Logger.getLogger(CsvFileRncDataProvider.class.getName());
+
 
     static {
         mappingPeriodeConstructionRange = new HashMap<>();
@@ -37,15 +38,14 @@ public class CsvFileRncDataProvider implements RncDataProvider {
     @Override
     public List<Copropriete> findAllCopropriete() {
         List<Copropriete> coproprietes = new ArrayList<>();
-        try {
-            InputStreamReader reader = new InputStreamReader(csvFileUrl.openStream(), StandardCharsets.UTF_8);
-            CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT.withHeader());
+        try (InputStreamReader reader = new InputStreamReader(csvFileUrl.openStream(), StandardCharsets.UTF_8);
+             CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT.withHeader())) {
             for (CSVRecord csvRecord : csvParser) {
                 Copropriete copropriete = getCoproprieteFromRecord(csvRecord);
                 coproprietes.add(copropriete);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Une erreur s'est produite lors de la lecture du fichier Rnc csv", e);
         }
 
         return coproprietes;
@@ -156,16 +156,9 @@ public class CsvFileRncDataProvider implements RncDataProvider {
 
     private Ville getVilleFromRecord(CSVRecord csvRecord) {
 
-        Region region = new Region.Builder()
-                .codeOfficiel(csvRecord.get("Code Officiel Région"))
-                .nomOfficiel(csvRecord.get("Nom Officiel Région"))
-                .build();
+        Region region = getRegionFromRecord(csvRecord);
 
-        Departement departement = new Departement.Builder()
-                .codeOfficiel(csvRecord.get("Code Officiel Département"))
-                .nomOfficiel(csvRecord.get("Nom Officiel Département"))
-                .region(region)
-                .build();
+        Departement departement = getDepartementFromRecord(csvRecord, region);
 
         return new Ville.Builder()
                 .codeOfficiel(csvRecord.get("Code Officiel Commune"))
@@ -174,6 +167,25 @@ public class CsvFileRncDataProvider implements RncDataProvider {
                 .nomOfficielArrondissement(csvRecord.get("Nom Officiel Arrondissement Commune"))
                 .departement(departement)
                 .build();
+    }
+
+    private static Departement getDepartementFromRecord(CSVRecord csvRecord, Region region) {
+        return new Departement.Builder()
+                .codeOfficiel(csvRecord.get("Code Officiel Département"))
+                .nomOfficiel(csvRecord.get("Nom Officiel Département"))
+                .region(region)
+                .build();
+    }
+
+    private static Region getRegionFromRecord(CSVRecord csvRecord) {
+        return new Region.Builder()
+                .codeOfficiel(csvRecord.get("Code Officiel Région"))
+                .nomOfficiel(csvRecord.get("Nom Officiel Région"))
+                .build();
+    }
+
+    public void setCsvFileUrl(URL csvFileUrl) {
+        this.csvFileUrl = csvFileUrl;
     }
 
 }
