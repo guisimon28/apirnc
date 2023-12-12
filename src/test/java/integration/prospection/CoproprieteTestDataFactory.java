@@ -86,7 +86,7 @@ class CoproprieteTestDataFactory {
                 .nomUsage("Copropriété A")
                 .mandat(aMandat().build())
                 .lots(aLots().build())
-                //.cadastre(aCadastre().build())
+                .cadastre(aCadastre().build())
                 .adresse(anAdresse().build())
                 .caracteristique(aCaracteristique().build());
     }

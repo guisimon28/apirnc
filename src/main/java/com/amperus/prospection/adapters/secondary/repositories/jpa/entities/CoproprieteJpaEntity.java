@@ -31,6 +31,9 @@ public class CoproprieteJpaEntity {
     private VilleJpaEntity ville;
     @OneToMany(mappedBy = "copropriete")
     private List<MandatJpaEntity> mandats;
+    @OneToOne
+    @JoinColumn(name = "cadastre_id", referencedColumnName = "id")
+    private CadastreJpaEntity cadastre;
 
     public UUID getId() {
         return id;
@@ -160,6 +163,14 @@ public class CoproprieteJpaEntity {
         this.mandats = mandats;
     }
 
+    public CadastreJpaEntity getCadastre() {
+        return cadastre;
+    }
+
+    public void setCadastre(CadastreJpaEntity cadastre) {
+        this.cadastre = cadastre;
+    }
+
     @Override
     public String toString() {
         return "CoproprieteJpaEntity{" +
@@ -178,6 +189,7 @@ public class CoproprieteJpaEntity {
                 ", nombreLotStationnement=" + nombreLotStationnement +
                 ", adresseJpaEntity=" + adresseJpaEntity +
                 ", ville=" + ville +
+                ", cadastre=" + cadastre +
                 '}';
     }
 }

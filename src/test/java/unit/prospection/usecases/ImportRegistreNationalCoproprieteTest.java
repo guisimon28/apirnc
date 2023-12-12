@@ -25,7 +25,7 @@ class ImportRegistreNationalCoproprieteTest {
 
     @Test
     void should_store_new_data_when_handle_rnc_import() {
-        new ImportRegistreNationalCopropriete(rncDataProvider, coproprieteRepository).handle(null);
+        new ImportRegistreNationalCopropriete(rncDataProvider, coproprieteRepository).handle();
 
         List<Copropriete> coproprietes = coproprieteRepository.findAll();
         assertThat(coproprietes).containsExactly(copropriete);
@@ -38,7 +38,7 @@ class ImportRegistreNationalCoproprieteTest {
         existingCopropriete.cadastre(null);
         coproprieteRepository.setCoproprietes(existingCopropriete.build());
 
-        new ImportRegistreNationalCopropriete(rncDataProvider, coproprieteRepository).handle(null);
+        new ImportRegistreNationalCopropriete(rncDataProvider, coproprieteRepository).handle();
 
         List<Copropriete> coproprietes = coproprieteRepository.findAll();
         assertThat(coproprietes).containsExactly(copropriete);

@@ -22,6 +22,22 @@ CREATE TABLE villes (
     FOREIGN KEY (departement_id) REFERENCES departements(id)
 );
 
+CREATE TABLE cadastres (
+    id UUID PRIMARY KEY,
+    nombre_parcelles INT
+);
+
+CREATE TABLE informations_cadastrales (
+    id UUID PRIMARY KEY,
+    reference VARCHAR(255),
+    code_insee_commune VARCHAR(255),
+    prefixe VARCHAR(255),
+    "section" VARCHAR(255),
+    numero_parcelle VARCHAR(255),
+    cadastre_id UUID,
+    FOREIGN KEY (cadastre_id) REFERENCES cadastres(id)
+);
+
 CREATE TABLE coproprietes (
     id UUID PRIMARY KEY,
     numero_immatriculation VARCHAR(55),
@@ -40,7 +56,9 @@ CREATE TABLE coproprietes (
     latitude DOUBLE PRECISION NOT NULL,
     longitude DOUBLE PRECISION NOT NULL,
     ville_id UUID,
-    FOREIGN KEY (ville_id) REFERENCES villes(id)
+    cadastre_id UUID,
+    FOREIGN KEY (ville_id) REFERENCES villes(id),
+    FOREIGN KEY (cadastre_id) REFERENCES cadastres(id)
 );
 
 CREATE TABLE syndicats (

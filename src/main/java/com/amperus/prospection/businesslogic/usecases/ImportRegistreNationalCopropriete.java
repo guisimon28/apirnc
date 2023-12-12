@@ -1,10 +1,10 @@
 package com.amperus.prospection.businesslogic.usecases;
 
-import java.util.List;
-
 import com.amperus.prospection.businesslogic.gateways.repositories.CoproprieteRepository;
 import com.amperus.prospection.businesslogic.gateways.rncDataProvision.RncDataProvider;
 import com.amperus.prospection.businesslogic.models.Copropriete;
+
+import java.util.List;
 
 public class ImportRegistreNationalCopropriete {
 
@@ -16,7 +16,7 @@ public class ImportRegistreNationalCopropriete {
 		this.coproprieteRepository = coproprieteRepository;
 	}
 
-	public void handle(String filePath){
+	public void handle() {
 		List<Copropriete> coproprietes = rncDataProvider.findAllCopropriete();
 		coproprieteRepository.saveAll(coproprietes);
 	}

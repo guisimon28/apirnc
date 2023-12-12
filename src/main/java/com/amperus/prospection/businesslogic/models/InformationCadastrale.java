@@ -3,7 +3,7 @@ package com.amperus.prospection.businesslogic.models;
 public record InformationCadastrale(String reference, String codeINSEECommune, String prefixe, String section, String numeroParcelle) {
 	public static class Builder {
 		private String reference;
-		private String codeINSEECommune;
+		private String codeInseeCommune;
 		private String prefixe;
 		private String section;
 		private String numeroParcelle;
@@ -14,7 +14,7 @@ public record InformationCadastrale(String reference, String codeINSEECommune, S
 		}
 
 		public Builder codeINSEECommune(String codeINSEECommune) {
-			this.codeINSEECommune = codeINSEECommune;
+			this.codeInseeCommune = codeINSEECommune;
 			return this;
 		}
 
@@ -34,7 +34,7 @@ public record InformationCadastrale(String reference, String codeINSEECommune, S
 		}
 
 		public InformationCadastrale build() {
-			return new InformationCadastrale(reference, codeINSEECommune, prefixe, section, numeroParcelle);
+			return new InformationCadastrale(reference, codeInseeCommune, prefixe, section, numeroParcelle);
 		}
 	}
 }

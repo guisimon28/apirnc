@@ -23,6 +23,7 @@ public class CoproprieteMapper {
         coproprieteJpaEntity.setVille(AdresseMapper.convert(copropriete.adresse().ville()));
         updateCaracteristique(coproprieteJpaEntity, copropriete.caracteristique());
         updateLots(coproprieteJpaEntity, copropriete.lots());
+        coproprieteJpaEntity.setCadastre(CadastreMapper.convert(copropriete.cadastre()));
         return coproprieteJpaEntity;
     }
 
