@@ -1,4 +1,4 @@
-package integration;
+package integration.prospection;
 
 import com.amperus.prospection.adapters.secondary.repositories.jpa.SpringDataConfiguration;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -1,13 +1,9 @@
 package com.amperus.prospection.adapters.secondary.repositories;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.amperus.prospection.businesslogic.gateways.repositories.CoproprieteRepository;
 import com.amperus.prospection.businesslogic.models.Copropriete;
+
+import java.util.*;
 
 public class InMemoriesCoproprieteRepositoryStub implements CoproprieteRepository {
 

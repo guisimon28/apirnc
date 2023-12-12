@@ -1,4 +1,4 @@
-package integration;
+package integration.prospection;
 
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;

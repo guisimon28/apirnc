@@ -6,7 +6,6 @@ import com.amperus.prospection.adapters.secondary.repositories.jpa.entities.Copr
 import com.amperus.prospection.adapters.secondary.repositories.jpa.mappers.CoproprieteMapper;
 import com.amperus.prospection.adapters.secondary.repositories.jpa.mappers.MandatMapper;
 import com.amperus.prospection.businesslogic.models.Copropriete;
-import integration.BaseIntegration;
 import org.assertj.core.api.recursive.comparison.RecursiveComparisonConfiguration;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

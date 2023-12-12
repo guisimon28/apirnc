@@ -1,4 +1,4 @@
-package com.amperus.prospection.adapters.primary;
+package e2e.prospection;
 
 import com.amperus.prospection.adapters.secondary.rncprovision.CsvFileRncDataProvider;
 import com.amperus.prospection.businesslogic.gateways.repositories.CoproprieteRepository;
@@ -12,11 +12,11 @@ import org.springframework.context.annotation.Profile;
 import java.net.URL;
 
 @Configuration
-@Profile("prod")
-public class DependenciesConfiguration {
-
+@Profile("prod-e2e")
+public class DependenciesConfigurationE2e {
     @Value("${rnc.file.url}")
     private URL rncCsvFileUrl;
+
 
     @Bean
     public ImportRegistreNationalCopropriete importRegistreNationalCopropriete(RncDataProvider rncDataProvider, CoproprieteRepository coproprieteRepository) {
