@@ -1,23 +1,23 @@
 package com.amperus.prospection.adapters.secondary.repositories.jpa.entities;
 
+import com.amperus.prospection.businesslogic.models.Syndicat;
 import jakarta.persistence.*;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.util.UUID;
 
 @Entity(name = "syndicats")
 public class SyndicatJpaEntity {
     @Id
-    @GeneratedValue
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid2")
     private UUID id;
     @Enumerated(EnumType.STRING)
     private TypeSyndicatJpaEnum type;
-    private String nom;
+    private String raisonSociale;
     private String siret;
     private String codeAPE;
     private boolean cooperatif;
-    private int nombreAssociationSyndicaleLibre;
-    private int nombreAssociationFonciereUrbaineLibre;
-    private int nombreUnionsSyndicats;
 
     public UUID getId() {
         return id;
@@ -35,12 +35,12 @@ public class SyndicatJpaEntity {
         this.type = type;
     }
 
-    public String getNom() {
-        return nom;
+    public String getRaisonSociale() {
+        return raisonSociale;
     }
 
-    public void setNom(String nom) {
-        this.nom = nom;
+    public void setRaisonSociale(String raisonSociale) {
+        this.raisonSociale = raisonSociale;
     }
 
     public String getSiret() {
@@ -67,28 +67,12 @@ public class SyndicatJpaEntity {
         this.cooperatif = cooperatif;
     }
 
-    public int getNombreAssociationSyndicaleLibre() {
-        return nombreAssociationSyndicaleLibre;
-    }
-
-    public void setNombreAssociationSyndicaleLibre(int nombreAssociationSyndicaleLibre) {
-        this.nombreAssociationSyndicaleLibre = nombreAssociationSyndicaleLibre;
-    }
-
-    public int getNombreAssociationFonciereUrbaineLibre() {
-        return nombreAssociationFonciereUrbaineLibre;
-    }
-
-    public void setNombreAssociationFonciereUrbaineLibre(int nombreAssociationFonciereUrbaineLibre) {
-        this.nombreAssociationFonciereUrbaineLibre = nombreAssociationFonciereUrbaineLibre;
-    }
-
-    public int getNombreUnionsSyndicats() {
-        return nombreUnionsSyndicats;
-    }
-
-    public void setNombreUnionsSyndicats(int nombreUnionsSyndicats) {
-        this.nombreUnionsSyndicats = nombreUnionsSyndicats;
+    public void update(Syndicat syndicat) {
+        this.raisonSociale = syndicat.raisonSociale();
+        this.siret = syndicat.siret();
+        this.codeAPE = syndicat.codeAPE();
+        this.type = TypeSyndicatJpaEnum.convertFromModel(syndicat.type());
+        this.cooperatif = syndicat.cooperatif();
     }
 
     @Override
@@ -96,13 +80,10 @@ public class SyndicatJpaEntity {
         return "SyndicatJpaEntity{" +
                 "id=" + id +
                 ", type=" + type +
-                ", nom='" + nom + '\'' +
+                ", raisonSociale='" + raisonSociale + '\'' +
                 ", siret='" + siret + '\'' +
                 ", codeAPE='" + codeAPE + '\'' +
                 ", cooperatif=" + cooperatif +
-                ", nombreAssociationSyndicaleLibre=" + nombreAssociationSyndicaleLibre +
-                ", nombreAssociationFonciereUrbaineLibre=" + nombreAssociationFonciereUrbaineLibre +
-                ", nombreUnionsSyndicats=" + nombreUnionsSyndicats +
                 '}';
     }
 }

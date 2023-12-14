@@ -1,6 +1,7 @@
 package com.amperus.prospection.adapters.secondary.repositories.jpa.entities;
 
 
+import com.amperus.prospection.businesslogic.models.Mandat;
 import jakarta.persistence.*;
 
 @Entity(name = "mandats")
@@ -41,6 +42,9 @@ public class MandatJpaEntity {
         this.statut = statut;
     }
 
+    public void update(Mandat mandat) {
+        this.statut = MandatStatutJpaEnum.convertFromModel(mandat.statut());
+    }
     @Override
     public String toString() {
         return "MandatJpaEntity{" +
@@ -49,4 +53,5 @@ public class MandatJpaEntity {
                 ", statut=" + statut +
                 '}';
     }
+
 }

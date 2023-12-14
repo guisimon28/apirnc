@@ -7,6 +7,7 @@ import com.amperus.prospection.businesslogic.usecases.ImportRegistreNationalCopr
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,7 +36,7 @@ class ImportRegistreNationalCoproprieteTest {
     void should_store_update_data_when_handle_rnc_import() {
         var existingCopropriete = CoproprieteTestDataFactory.aCopropriete();
         existingCopropriete.nomUsage("update nom usage");
-        existingCopropriete.cadastre(null);
+        existingCopropriete.informationsCadastrales(Collections.emptyList());
         coproprieteRepository.setCoproprietes(existingCopropriete.build());
 
         new ImportRegistreNationalCopropriete(rncDataProvider, coproprieteRepository).handle();

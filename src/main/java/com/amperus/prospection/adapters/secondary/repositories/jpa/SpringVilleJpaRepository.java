@@ -7,5 +7,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface SpringVilleJpaRepository extends JpaRepository<VilleJpaEntity, UUID> {
-    Optional<VilleJpaEntity> findByCodeOfficielAndCodeOfficielArrondissement(String codeOfficiel, String codeOfficielArrondissement);
+    Optional<VilleJpaEntity> findByCodeOfficielAndCodeOfficielArrondissementAndNomOfficiel(String codeOfficiel, String codeOfficielArrondissement,
+                                                                                           String nomOfficiel);
 }

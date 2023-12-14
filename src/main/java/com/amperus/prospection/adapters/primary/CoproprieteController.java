@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/coproprietes")
-public class BookingController {
+public class CoproprieteController {
     private final ImportRegistreNationalCopropriete importRegistreNationalCopropriete;
 
-    public BookingController(ImportRegistreNationalCopropriete importRegistreNationalCopropriete) {
+    public CoproprieteController(ImportRegistreNationalCopropriete importRegistreNationalCopropriete) {
         this.importRegistreNationalCopropriete = importRegistreNationalCopropriete;
     }
 

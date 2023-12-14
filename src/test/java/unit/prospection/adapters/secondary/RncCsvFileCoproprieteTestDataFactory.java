@@ -3,26 +3,18 @@ package unit.prospection.adapters.secondary;
 import com.amperus.prospection.businesslogic.models.*;
 
 import java.time.LocalDate;
-import java.util.Collections;
+import java.util.List;
 
 class RncCsvFileCoproprieteTestDataFactory {
-
-    public static RepresentantLegal.Builder aRepresentantLegal() {
-        return new RepresentantLegal.Builder()
-                .nom("JOSEPH BAUR IMMOBILIER 34473827300012")
-                .siret("34473827300012")
-                .codeAPE("6832A")
-                .commune("LYON 5EME");
-    }
 
     public static Syndicat.Builder aSyndicat() {
         return new Syndicat.Builder()
                 .type(TypeSyndicat.PROFESSIONNEL)
-                .representantLegal(aRepresentantLegal().build())
+                .raisonSociale("Joseph Baur Immobilier")
                 .cooperatif(false)
-                .nombreAssociationSyndicaleLibre(5)
-                .nombreAssociationFonciereUrbaineLibre(3)
-                .nombreUnionsSyndicats(2);
+                .siret("34473827300012")
+                .codeApe("6832A")
+                .commune("Lyon 5eme");
     }
 
     public static Mandat.Builder aMandat() {
@@ -39,10 +31,14 @@ class RncCsvFileCoproprieteTestDataFactory {
                 .nombreStationnement(72);
     }
 
-    public static Cadastre.Builder aCadastre() {
-        return new Cadastre.Builder()
-                .informations(Collections.emptyList())
-                .nombreParcelles(0);
+    public static List<InformationCadastrale> aListOfInformationCadastrales() {
+        return List.of(new InformationCadastrale.Builder()
+                .reference("Ref1")
+                .codeINSEECommune("12345")
+                .prefixe("A")
+                .section("A1")
+                .numeroParcelle("001")
+                .build());
     }
 
     public static Ville.Builder aVille() {
@@ -83,8 +79,8 @@ class RncCsvFileCoproprieteTestDataFactory {
     public static Copropriete.Builder aCopropriete() {
         return new Copropriete.Builder()
                 .numeroImmatriculation("AA0002402")
-                .nomUsage("LES JARDINS DE JUSTINE")
-                .cadastre(aCadastre().build())
+                .nomUsage("Les Jardins De Justine")
+                .informationsCadastrales(aListOfInformationCadastrales())
                 .adresse(anAdresse().build())
                 .caracteristique(aCaracteristique().build())
                 .lots(aLots().build())

@@ -3,15 +3,14 @@ package com.amperus.prospection.adapters.secondary.repositories.jpa.entities;
 import com.amperus.prospection.businesslogic.models.Region;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-
-import java.util.UUID;
 
 @Entity(name = "regions")
 public class RegionJpaEntity {
     @Id
-    @GeneratedValue
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String codeOfficiel;
     private String nomOfficiel;
 
@@ -23,11 +22,11 @@ public class RegionJpaEntity {
         this.nomOfficiel = region.nomOfficiel();
     }
 
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

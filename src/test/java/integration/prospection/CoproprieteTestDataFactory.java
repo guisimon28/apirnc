@@ -7,22 +7,14 @@ import java.util.List;
 
 class CoproprieteTestDataFactory {
 
-    public static RepresentantLegal.Builder aRepresentantLegal() {
-        return new RepresentantLegal.Builder()
-                .nom("John Doe")
-                .siret("123456789")
-                .codeAPE("1234")
-                .commune("Paris");
-    }
-
     public static Syndicat.Builder aSyndicat() {
         return new Syndicat.Builder()
-                .type(TypeSyndicat.BENEVOLE)
-                .representantLegal(aRepresentantLegal().build())
-                .cooperatif(true)
-                .nombreAssociationSyndicaleLibre(5)
-                .nombreAssociationFonciereUrbaineLibre(3)
-                .nombreUnionsSyndicats(2);
+                .type(TypeSyndicat.PROFESSIONNEL)
+                .raisonSociale("JOSEPH BAUR IMMOBILIER")
+                .cooperatif(false)
+                .siret("34473827300012")
+                .codeApe("6832A")
+                .commune("LYON 5EME");
     }
 
     public static Mandat.Builder aMandat() {
@@ -39,16 +31,14 @@ class CoproprieteTestDataFactory {
                 .nombreStationnement(20);
     }
 
-    public static Cadastre.Builder aCadastre() {
-        return new Cadastre.Builder()
-                .informations(List.of(new InformationCadastrale.Builder()
-                        .reference("Ref1")
-                        .codeINSEECommune("12345")
-                        .prefixe("A")
-                        .section("A1")
-                        .numeroParcelle("001")
-                        .build()))
-                .nombreParcelles(1);
+    public static List<InformationCadastrale> aListOfInformationCadastrales() {
+        return List.of(new InformationCadastrale.Builder()
+                .reference("Ref1")
+                .codeINSEECommune("12345")
+                .prefixe("A")
+                .section("A1")
+                .numeroParcelle("001")
+                .build());
     }
 
     public static Ville.Builder aVille() {
@@ -86,7 +76,7 @@ class CoproprieteTestDataFactory {
                 .nomUsage("Copropriété A")
                 .mandat(aMandat().build())
                 .lots(aLots().build())
-                .cadastre(aCadastre().build())
+                .informationsCadastrales(aListOfInformationCadastrales())
                 .adresse(anAdresse().build())
                 .caracteristique(aCaracteristique().build());
     }

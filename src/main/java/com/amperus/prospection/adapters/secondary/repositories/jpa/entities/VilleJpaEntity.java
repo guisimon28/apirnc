@@ -1,23 +1,18 @@
 package com.amperus.prospection.adapters.secondary.repositories.jpa.entities;
 
 import com.amperus.prospection.businesslogic.models.Ville;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-
-import java.util.UUID;
+import jakarta.persistence.*;
 
 @Entity(name = "villes")
 public class VilleJpaEntity {
     @Id
-    @GeneratedValue
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String codeOfficiel;
     private String nomOfficiel;
     private String codeOfficielArrondissement;
     private String nomOfficielArrondissement;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private DepartementJpaEntity departement;
 
     public VilleJpaEntity() {
@@ -31,11 +26,11 @@ public class VilleJpaEntity {
         this.departement = new DepartementJpaEntity(ville.departement());
     }
 
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

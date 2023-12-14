@@ -1,6 +1,9 @@
 package com.amperus.prospection.businesslogic.models;
 
-public record CoordonneesGeographiques(double longitude, double latitude) {
+public record CoordonneesGeographiques(
+		double longitude,
+		double latitude) {
+	
 	public static class Builder {
 		private double longitude;
 		private double latitude;

@@ -21,6 +21,8 @@ dependencies {
     implementation group: 'org.apache.commons', name: 'commons-csv', version: '1.10.0'
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.14.0'
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.7.1'
+    implementation group: 'org.apache.commons', name: 'commons-text', version: '1.11.0'
+
 
     providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 

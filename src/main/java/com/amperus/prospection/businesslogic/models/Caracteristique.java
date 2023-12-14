@@ -2,10 +2,14 @@ package com.amperus.prospection.businesslogic.models;
 
 import java.time.LocalDate;
 
-public record Caracteristique(LocalDate dateReglement, boolean residenceService,
-                              PeriodeConstructionRange periodeConstruction,
-                              boolean dansActionCoeurDeVille,
-                              boolean dansPetiteVilleDeDemain, boolean aidee) {
+public record Caracteristique(
+        LocalDate dateReglement,
+        boolean residenceService,
+        PeriodeConstructionRange periodeConstruction,
+        boolean dansActionCoeurDeVille,
+        boolean dansPetiteVilleDeDemain,
+        boolean aidee) {
+    
     public static class Builder {
         private LocalDate dateReglement;
         private boolean residenceService;

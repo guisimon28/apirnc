@@ -1,11 +1,16 @@
 package com.amperus.prospection.businesslogic.models;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.WordUtils;
+
+import java.util.List;
+
 public record Copropriete(
         String numeroImmatriculation,
         String nomUsage,
         Mandat mandat,
         Lots lots,
-        Cadastre cadastre,
+        List<InformationCadastrale> informationsCadastrales,
         Adresse adresse,
         Caracteristique caracteristique) {
 
@@ -14,7 +19,7 @@ public record Copropriete(
         private String nomUsage;
         private Mandat mandat;
         private Lots lots;
-        private Cadastre cadastre;
+        private List<InformationCadastrale> informationsCadastrales;
         private Adresse adresse;
         private Caracteristique caracteristique;
 
@@ -38,8 +43,8 @@ public record Copropriete(
             return this;
         }
 
-        public Builder cadastre(Cadastre cadastre) {
-            this.cadastre = cadastre;
+        public Builder informationsCadastrales(List<InformationCadastrale> informationsCadastrales) {
+            this.informationsCadastrales = informationsCadastrales;
             return this;
         }
 
@@ -53,9 +58,16 @@ public record Copropriete(
             return this;
         }
 
+        public void reFormatNomUsage() {
+            if (StringUtils.isNotBlank(nomUsage)) {
+                nomUsage = WordUtils.capitalize(nomUsage.toLowerCase().trim());
+            }
+        }
+
         public Copropriete build() {
+            reFormatNomUsage();
             return new Copropriete(
-                    numeroImmatriculation, nomUsage, mandat, lots, cadastre, adresse, caracteristique);
+                    numeroImmatriculation, nomUsage, mandat, lots, informationsCadastrales, adresse, caracteristique);
         }
     }
 }

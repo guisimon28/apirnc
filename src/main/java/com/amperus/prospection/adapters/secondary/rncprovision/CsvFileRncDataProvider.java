@@ -3,7 +3,6 @@ package com.amperus.prospection.adapters.secondary.rncprovision;
 import com.amperus.prospection.businesslogic.gateways.rncDataProvision.RncDataProvider;
 import com.amperus.prospection.businesslogic.models.*;
 import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
 import java.io.IOException;
@@ -34,15 +33,12 @@ public class CsvFileRncDataProvider implements RncDataProvider {
         mappingPeriodeConstructionRange.put("non renseigné", PeriodeConstructionRange.INCONNUE);
     }
 
-
     @Override
     public List<Copropriete> findAllCopropriete() {
         List<Copropriete> coproprietes = new ArrayList<>();
-        try (InputStreamReader reader = new InputStreamReader(csvFileUrl.openStream(), StandardCharsets.UTF_8);
-             CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT.withHeader())) {
-            for (CSVRecord csvRecord : csvParser) {
-                Copropriete copropriete = getCoproprieteFromRecord(csvRecord);
-                coproprietes.add(copropriete);
+        try (InputStreamReader reader = new InputStreamReader(csvFileUrl.openStream(), StandardCharsets.UTF_8)) {
+            for (CSVRecord csvRecord : CSVFormat.RFC4180.withFirstRecordAsHeader().parse(reader).getRecords()) {
+                extractRecord(csvRecord, coproprietes);
             }
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Une erreur s'est produite lors de la lecture du fichier Rnc csv", e);
@@ -51,24 +47,25 @@ public class CsvFileRncDataProvider implements RncDataProvider {
         return coproprietes;
     }
 
+    private void extractRecord(CSVRecord csvRecord, List<Copropriete> coproprietes) {
+        try {
+            Copropriete copropriete = getCoproprieteFromRecord(csvRecord);
+            coproprietes.add(copropriete);
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Erreur lors de l'intégration de l'enregistrement {0}", csvRecord);
+        }
+    }
+
     private Copropriete getCoproprieteFromRecord(CSVRecord csvRecord) {
         return new Copropriete.Builder()
                 .numeroImmatriculation(csvRecord.get("Numéro d'immatriculation"))
                 .nomUsage(csvRecord.get("Nom d’usage de la copropriété"))
-                .cadastre(getCadastreFromRecord(csvRecord))
+                .informationsCadastrales(getInformationsCadastralesFromRecord(csvRecord))
                 .lots(getLotsFromRecord(csvRecord))
                 .adresse(getAdresseFromRecord(csvRecord))
                 .mandat(getMandatFromRecord(csvRecord))
                 .caracteristique(getCaracteristiqueFromRecord(csvRecord))
                 .build();
-    }
-
-    private Cadastre getCadastreFromRecord(CSVRecord csvRecord) {
-        List<InformationCadastrale> informations = getInformationsCadastralesFromRecord(csvRecord);
-        int nombreParcelles = Integer.parseInt(csvRecord.get("Nombre de parcelles cadastrales"));
-        return new Cadastre.Builder()
-                .informations(informations)
-                .nombreParcelles(nombreParcelles).build();
     }
 
     private List<InformationCadastrale> getInformationsCadastralesFromRecord(CSVRecord csvRecord) {
@@ -108,22 +105,17 @@ public class CsvFileRncDataProvider implements RncDataProvider {
     }
 
     private Syndicat getSyndicatFromRecord(CSVRecord csvRecord) {
+        if (csvRecord.get("Siret représentant légal (si existe)").equalsIgnoreCase("non connu")) {
+            return null;
+        }
         return new Syndicat.Builder()
-                .type(TypeSyndicat.findFromLabel(csvRecord.get("Type de syndic : bénévole / professionnel / non connu")).orElse(null))
-                .cooperatif(csvRecord.get("Syndicat coopératif").equalsIgnoreCase("oui"))
-                .nombreAssociationSyndicaleLibre(Integer.parseInt(csvRecord.get("Nombre d’ASL auxquelles est rattaché le syndicat de copropriétaires")))
-                .nombreAssociationFonciereUrbaineLibre(Integer.parseInt(csvRecord.get("Nombre d’AFUL auxquelles est rattaché le syndicat de copropriétaires")))
-                .nombreUnionsSyndicats(Integer.parseInt(csvRecord.get("Nombre d’Unions de syndicats auxquelles est rattaché le syndicat de copropriétaires")))
-                .representantLegal(getRepresentantLegal(csvRecord))
-                .build();
-    }
-
-    private RepresentantLegal getRepresentantLegal(CSVRecord csvRecord) {
-        return new RepresentantLegal.Builder()
-                .codeAPE(csvRecord.get("Code APE"))
-                .nom(csvRecord.get("Identification du représentant légal  (raison sociale et le numéro SIRET du syndic professionnel ou Civilité/prénom/ nom du syndic bénévole ou coopératif)"))
+                .raisonSociale(csvRecord.get("Identification du représentant légal  (raison sociale et le numéro SIRET du syndic professionnel ou Civilité/prénom/ nom " +
+                        "du syndic bénévole ou coopératif)"))
+                .codeApe(csvRecord.get("Code APE"))
                 .siret(csvRecord.get("Siret représentant légal (si existe)"))
                 .commune(csvRecord.get("Commune du représentant légal"))
+                .type(TypeSyndicat.findFromLabel(csvRecord.get("Type de syndic : bénévole / professionnel / non connu")).orElse(null))
+                .cooperatif(csvRecord.get("Syndicat coopératif").equalsIgnoreCase("oui"))
                 .build();
     }
 

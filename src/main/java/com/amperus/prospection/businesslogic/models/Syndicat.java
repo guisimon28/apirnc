@@ -1,28 +1,35 @@
 package com.amperus.prospection.businesslogic.models;
 
+import org.apache.commons.text.WordUtils;
+
 public record Syndicat(
+        String raisonSociale,
+        String siret,
         TypeSyndicat type,
-        RepresentantLegal representantLegal,
         boolean cooperatif,
-        int nombreAssociationSyndicaleLibre,
-        int nombreAssociationFonciereUrbaineLibre,
-        int nombreUnionsSyndicats) {
+        String codeAPE,
+        String commune) {
 
     public static class Builder {
+        private String raisonSociale;
+        private String siret;
         private TypeSyndicat type;
-        private RepresentantLegal representantLegal;
         private boolean cooperatif;
-        private int nombreAssociationSyndicaleLibre;
-        private int nombreAssociationFonciereUrbaineLibre;
-        private int nombreUnionsSyndicats;
+        private String codeAPE;
+        private String commune;
 
-        public Builder type(TypeSyndicat type) {
-            this.type = type;
+        public Builder raisonSociale(String raisonSociale) {
+            this.raisonSociale = raisonSociale;
             return this;
         }
 
-        public Builder representantLegal(RepresentantLegal representantLegal) {
-            this.representantLegal = representantLegal;
+        public Builder siret(String siret) {
+            this.siret = siret;
+            return this;
+        }
+
+        public Builder type(TypeSyndicat type) {
+            this.type = type;
             return this;
         }
 
@@ -31,26 +38,33 @@ public record Syndicat(
             return this;
         }
 
-        public Builder nombreAssociationSyndicaleLibre(int nombreAssociationSyndicaleLibre) {
-            this.nombreAssociationSyndicaleLibre = nombreAssociationSyndicaleLibre;
+        public Builder codeApe(String codeApe) {
+            this.codeAPE = codeApe;
             return this;
         }
 
-        public Builder nombreAssociationFonciereUrbaineLibre(int nombreAssociationFonciereUrbaineLibre) {
-            this.nombreAssociationFonciereUrbaineLibre = nombreAssociationFonciereUrbaineLibre;
+        public Builder commune(String commune) {
+            this.commune = commune;
             return this;
         }
 
-        public Builder nombreUnionsSyndicats(int nombreUnionsSyndicats) {
-            this.nombreUnionsSyndicats = nombreUnionsSyndicats;
-            return this;
+        public void reFormatRaisonSociale() {
+            if (siret != null && raisonSociale != null && raisonSociale.contains(siret)) {
+                raisonSociale = raisonSociale.replace(siret, "");
+                raisonSociale = WordUtils.capitalize(raisonSociale.toLowerCase().trim());
+            }
+        }
+
+        public void reFormatCommune() {
+            if (commune != null) {
+                commune = WordUtils.capitalize(commune.toLowerCase().trim());
+            }
         }
 
         public Syndicat build() {
-            return new Syndicat(
-                    type, representantLegal, cooperatif, nombreAssociationSyndicaleLibre,
-                    nombreAssociationFonciereUrbaineLibre, nombreUnionsSyndicats
-            );
+            reFormatRaisonSociale();
+            reFormatCommune();
+            return new Syndicat(raisonSociale, siret, type, cooperatif, codeAPE, commune);
         }
     }
 }

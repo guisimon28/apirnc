@@ -1,29 +1,28 @@
 package com.amperus.prospection.adapters.secondary.repositories.jpa.entities;
 
 
+import com.amperus.prospection.businesslogic.models.InformationCadastrale;
 import jakarta.persistence.*;
-
-import java.util.UUID;
 
 @Entity(name = "informations_cadastrales")
 public class InformationCadastraleJpaEntity {
     @Id
-    @GeneratedValue
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String reference;
     private String codeInseeCommune;
     private String prefixe;
     private String section;
     private String numeroParcelle;
     @ManyToOne
-    @JoinColumn(name = "cadastre_id")
-    private CadastreJpaEntity cadastre;
+    @JoinColumn(name = "copropriete_id")
+    private CoproprieteJpaEntity copropriete;
 
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -67,14 +66,21 @@ public class InformationCadastraleJpaEntity {
         this.numeroParcelle = numeroParcelle;
     }
 
-    public CadastreJpaEntity getCadastre() {
-        return cadastre;
+    public CoproprieteJpaEntity getCopropriete() {
+        return copropriete;
     }
 
-    public void setCadastre(CadastreJpaEntity cadastre) {
-        this.cadastre = cadastre;
+    public void setCopropriete(CoproprieteJpaEntity copropriete) {
+        this.copropriete = copropriete;
     }
 
+    public void update(InformationCadastrale informationCadastrale) {
+        this.numeroParcelle = informationCadastrale.numeroParcelle();
+        this.codeInseeCommune = informationCadastrale.codeINSEECommune();
+        this.section = informationCadastrale.section();
+        this.prefixe = informationCadastrale.prefixe();
+        this.reference = informationCadastrale.reference();
+    }
     @Override
     public String toString() {
         return "InformationCadastraleJpaEntity{" +
