@@ -3,8 +3,7 @@ package integration.prospection;
 import com.amperus.prospection.adapters.secondary.repositories.jpa.JpaCoproprieteStorage;
 import com.amperus.prospection.adapters.secondary.repositories.jpa.SpringCoproprieteRepository;
 import com.amperus.prospection.adapters.secondary.repositories.jpa.entities.*;
-import com.amperus.prospection.businesslogic.models.Copropriete;
-import com.amperus.prospection.businesslogic.models.Mandat;
+import com.amperus.prospection.businesslogic.models.*;
 import org.assertj.core.api.recursive.comparison.RecursiveComparisonConfiguration;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,17 +46,38 @@ class JpaCoproprieteStorageIT extends BaseIntegration {
             return informationCadastrale;
         }).toList();
         coproprieteJpaEntity.setInformationsCadastrales(informationCadastrales);
-        coproprieteJpaEntity.setVille(new VilleJpaEntity(copropriete.adresse().ville()));
-        coproprieteJpaEntity.setMandats(List.of(convertToJpa(copropriete.mandat())));
+        coproprieteJpaEntity.setVille(convertToJpa(copropriete.adresse().ville()));
+        coproprieteJpaEntity.setMandats(List.of(convertToJpa(copropriete.mandat(), coproprieteJpaEntity)));
         return coproprieteJpaEntity;
     }
 
-    private MandatJpaEntity convertToJpa(Mandat mandat) {
+    private VilleJpaEntity convertToJpa(Ville ville) {
+        VilleJpaEntity villeJpaEntity = new VilleJpaEntity();
+        villeJpaEntity.update(ville);
+        villeJpaEntity.setDepartement(convertToJpa(ville.departement()));
+        return villeJpaEntity;
+    }
+
+    private DepartementJpaEntity convertToJpa(Departement departement) {
+        DepartementJpaEntity departementJpaEntity = new DepartementJpaEntity();
+        departementJpaEntity.update(departement);
+        departementJpaEntity.setRegion(convertToJpa(departement.region()));
+        return departementJpaEntity;
+    }
+
+    private RegionJpaEntity convertToJpa(Region region) {
+        RegionJpaEntity regionJpaEntity = new RegionJpaEntity();
+        regionJpaEntity.update(region);
+        return regionJpaEntity;
+    }
+
+    private MandatJpaEntity convertToJpa(Mandat mandat, CoproprieteJpaEntity coproprieteJpaEntity) {
         SyndicatJpaEntity syndicatJpaEntity = new SyndicatJpaEntity();
         syndicatJpaEntity.update(mandat.syndicat());
         MandatJpaEntity mandatJpaEntity = new MandatJpaEntity();
         mandatJpaEntity.update(mandat);
         mandatJpaEntity.setSyndicat(syndicatJpaEntity);
+        mandatJpaEntity.setCopropriete(coproprieteJpaEntity);
         return mandatJpaEntity;
     }
 }

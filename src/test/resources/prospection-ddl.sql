@@ -72,3 +72,7 @@ CREATE TABLE mandats (
  FOREIGN KEY (copropriete_id) REFERENCES coproprietes(id),
  FOREIGN KEY (syndicat_id) REFERENCES syndicats(id)
 );
+
+CREATE INDEX idx_numero_immatriculation ON coproprietes (numero_immatriculation);
+CREATE INDEX idx_siret ON syndicats (siret);
+CREATE INDEX idx_ville ON villes (code_officiel,nom_officiel,code_officiel_arrondissement);

@@ -34,17 +34,10 @@ public class MandatJpaEntity {
         this.syndicat = syndicat;
     }
 
-    public MandatStatutJpaEnum getStatut() {
-        return statut;
-    }
-
-    public void setStatut(MandatStatutJpaEnum statut) {
-        this.statut = statut;
-    }
-
     public void update(Mandat mandat) {
         this.statut = MandatStatutJpaEnum.convertFromModel(mandat.statut());
     }
+
     @Override
     public String toString() {
         return "MandatJpaEntity{" +

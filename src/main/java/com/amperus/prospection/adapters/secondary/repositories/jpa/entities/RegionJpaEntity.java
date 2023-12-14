@@ -14,14 +14,6 @@ public class RegionJpaEntity {
     private String codeOfficiel;
     private String nomOfficiel;
 
-    public RegionJpaEntity() {
-    }
-
-    public RegionJpaEntity(Region region) {
-        this.codeOfficiel = region.codeOfficiel();
-        this.nomOfficiel = region.nomOfficiel();
-    }
-
     public Long getId() {
         return id;
     }
@@ -30,20 +22,13 @@ public class RegionJpaEntity {
         this.id = id;
     }
 
-    public String getCodeOfficiel() {
-        return codeOfficiel;
+    public void update(Region region) {
+        this.codeOfficiel = region.codeOfficiel();
+        this.nomOfficiel = region.nomOfficiel();
     }
 
-    public void setCodeOfficiel(String codeOfficiel) {
-        this.codeOfficiel = codeOfficiel;
-    }
-
-    public String getNomOfficiel() {
-        return nomOfficiel;
-    }
-
-    public void setNomOfficiel(String nomOfficiel) {
-        this.nomOfficiel = nomOfficiel;
+    public boolean isSame(Region region) {
+        return codeOfficiel.equalsIgnoreCase(region.codeOfficiel());
     }
 
     @Override

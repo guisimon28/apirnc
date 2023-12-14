@@ -1,54 +1,62 @@
 package com.amperus.prospection.adapters.secondary.repositories.jpa;
 
 import com.amperus.prospection.adapters.secondary.repositories.jpa.entities.DepartementJpaEntity;
-import com.amperus.prospection.adapters.secondary.repositories.jpa.entities.RegionJpaEntity;
 import com.amperus.prospection.adapters.secondary.repositories.jpa.entities.VilleJpaEntity;
+import com.amperus.prospection.businesslogic.models.Adresse;
+import com.amperus.prospection.businesslogic.models.Copropriete;
+import com.amperus.prospection.businesslogic.models.Departement;
 import com.amperus.prospection.businesslogic.models.Ville;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Component
 public class JpaVilleStorage {
 
     private final SpringVilleJpaRepository springVilleJpaRepository;
-    private final SpringDepartementJpaRepository springDepartementJpaRepository;
-    private final SpringRegionJpaRepository springRegionJpaRepository;
 
-    public JpaVilleStorage(SpringVilleJpaRepository springVilleJpaRepository,
-                           SpringDepartementJpaRepository springDepartementJpaRepository, SpringRegionJpaRepository springRegionJpaRepository) {
+    private final JpaDepartementStorage jpaDepartementStorage;
+
+
+    public JpaVilleStorage(SpringVilleJpaRepository springVilleJpaRepository, JpaDepartementStorage jpaDepartementStorage) {
         this.springVilleJpaRepository = springVilleJpaRepository;
-        this.springDepartementJpaRepository = springDepartementJpaRepository;
-        this.springRegionJpaRepository = springRegionJpaRepository;
+        this.jpaDepartementStorage = jpaDepartementStorage;
     }
 
-    @Transactional(Transactional.TxType.REQUIRES_NEW)
-    public void saveAll(List<Ville> villes) {
-        villes.forEach(this::createOrUpdate);
+    public List<VilleJpaEntity> updateAndGetAllVilles(List<Copropriete> coproprietes) {
+        List<Ville> villes = coproprietes.stream().map(Copropriete::adresse).filter(Objects::nonNull)
+                .map(Adresse::ville).filter(Objects::nonNull).toList();
+        List<DepartementJpaEntity> departementJpaEntities = jpaDepartementStorage.updateAndGetAllDepartements(villes);
+        List<VilleJpaEntity> villeJpaEntities = springVilleJpaRepository.findAll();
+        return createOrUpdate(villes, villeJpaEntities, departementJpaEntities);
     }
 
-    private void createOrUpdate(Ville ville) {
-        Optional<VilleJpaEntity> villeJpaEntity = springVilleJpaRepository.findByCodeOfficielAndCodeOfficielArrondissementAndNomOfficiel(ville.codeOfficiel(),
-                ville.codeOfficielArrondissement(), ville.nomOfficiel());
-        if (villeJpaEntity.isEmpty()) {
-            createNewVille(ville);
+    private List<VilleJpaEntity> createOrUpdate(List<Ville> villes, List<VilleJpaEntity> villeJpaEntities, List<DepartementJpaEntity> departementJpaEntities) {
+        villes.forEach(ville -> createOrUpdate(ville, villeJpaEntities, departementJpaEntities));
+        return springVilleJpaRepository.saveAll(villeJpaEntities);
+    }
+
+    private void createOrUpdate(Ville ville, List<VilleJpaEntity> villeJpaEntities, List<DepartementJpaEntity> departementJpaEntities) {
+        VilleJpaEntity villeJpaEntity = find(ville, villeJpaEntities).orElseGet(() -> {
+            var newVille = new VilleJpaEntity();
+            villeJpaEntities.add(newVille);
+            findDepartement(ville.departement(), departementJpaEntities).ifPresent(newVille::setDepartement);
+            return newVille;
+        });
+        villeJpaEntity.update(ville);
+    }
+
+    private static Optional<DepartementJpaEntity> findDepartement(Departement departement, List<DepartementJpaEntity> departementJpaEntities) {
+        if (departement == null) {
+            return Optional.empty();
         }
+        return departementJpaEntities.stream().filter(d -> d.isSame(departement)).findFirst();
     }
 
-    private void createNewVille(Ville ville) {
-        VilleJpaEntity villeJpaEntity = new VilleJpaEntity(ville);
-        RegionJpaEntity regionJpaEntity = springRegionJpaRepository.save(villeJpaEntity.getDepartement().getRegion());
-        villeJpaEntity.getDepartement().setRegion(regionJpaEntity);
-        DepartementJpaEntity departementJpaEntity = springDepartementJpaRepository.save(villeJpaEntity.getDepartement());
-        villeJpaEntity.setDepartement(departementJpaEntity);
-        springVilleJpaRepository.save(villeJpaEntity);
+    public Optional<VilleJpaEntity> find(Ville ville, List<VilleJpaEntity> villeJpaEntities) {
+        return villeJpaEntities.stream().filter(v -> v.isSame(ville))
+                .findFirst();
     }
-
-    public Optional<VilleJpaEntity> find(Ville ville) {
-        return springVilleJpaRepository.findByCodeOfficielAndCodeOfficielArrondissementAndNomOfficiel(ville.codeOfficiel(),
-                ville.codeOfficielArrondissement(), ville.nomOfficiel());
-    }
-
 }

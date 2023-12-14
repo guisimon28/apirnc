@@ -13,10 +13,8 @@ public enum PeriodeConstructionRangeJpaEnum {
     INCONNUE;
 
     public static PeriodeConstructionRangeJpaEnum convertFromModel(PeriodeConstructionRange periodeConstructionRange) {
-        if (periodeConstructionRange == null) {
-            return null;
-        }
         return switch (periodeConstructionRange) {
+            case null -> null;
             case PeriodeConstructionRange.AVANT_1949 -> PeriodeConstructionRangeJpaEnum.AVANT_1949;
             case PeriodeConstructionRange.DE_1949_A_1960 -> PeriodeConstructionRangeJpaEnum.DE_1949_A_1960;
             case PeriodeConstructionRange.DE_1961_A_1974 -> PeriodeConstructionRangeJpaEnum.DE_1961_A_1974;

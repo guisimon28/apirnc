@@ -10,41 +10,16 @@ public class DepartementJpaEntity {
     private Long id;
     private String codeOfficiel;
     private String nomOfficiel;
-
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL)
     private RegionJpaEntity region;
 
-    public DepartementJpaEntity() {
-    }
-
-    public DepartementJpaEntity(Departement departement) {
+    public void update(Departement departement) {
         this.codeOfficiel = departement.codeOfficiel();
         this.nomOfficiel = departement.nomOfficiel();
-        this.region = new RegionJpaEntity(departement.region());
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getCodeOfficiel() {
-        return codeOfficiel;
-    }
-
-    public void setCodeOfficiel(String codeOfficiel) {
-        this.codeOfficiel = codeOfficiel;
-    }
-
-    public String getNomOfficiel() {
-        return nomOfficiel;
-    }
-
-    public void setNomOfficiel(String nomOfficiel) {
-        this.nomOfficiel = nomOfficiel;
+    public boolean isSame(Departement departement) {
+        return codeOfficiel.equalsIgnoreCase(departement.codeOfficiel());
     }
 
     public RegionJpaEntity getRegion() {

@@ -1,97 +1,85 @@
 package com.amperus.prospection.adapters.secondary.repositories.jpa;
 
-import com.amperus.prospection.adapters.secondary.repositories.jpa.entities.CoproprieteJpaEntity;
-import com.amperus.prospection.adapters.secondary.repositories.jpa.entities.InformationCadastraleJpaEntity;
-import com.amperus.prospection.adapters.secondary.repositories.jpa.entities.MandatJpaEntity;
+import com.amperus.prospection.adapters.secondary.repositories.jpa.entities.*;
 import com.amperus.prospection.businesslogic.gateways.repositories.CoproprieteRepository;
-import com.amperus.prospection.businesslogic.models.*;
-import jakarta.transaction.Transactional;
+import com.amperus.prospection.businesslogic.models.Copropriete;
+import com.amperus.prospection.businesslogic.models.InformationCadastrale;
+import com.amperus.prospection.businesslogic.models.Mandat;
+import com.amperus.prospection.businesslogic.models.Syndicat;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Component
 public class JpaCoproprieteStorage implements CoproprieteRepository {
 
     private final SpringCoproprieteRepository springCoproprieteRepository;
-    private final SpringMandatJpaRepository springMandatJpaRepository;
-    private final SpringInformationsCadastralesJpaRepository springInformationsCadastralesJpaRepository;
     private final JpaVilleStorage jpaVilleStorage;
     private final JpaSyndicatStorage jpaSyndicatStorage;
 
-    public JpaCoproprieteStorage(SpringCoproprieteRepository springCoproprieteRepository, SpringMandatJpaRepository springMandatJpaRepository,
-                                 SpringInformationsCadastralesJpaRepository springInformationsCadastralesJpaRepository,
-                                 JpaVilleStorage jpaVilleStorage, JpaSyndicatStorage jpaSyndicatStorage) {
+    public JpaCoproprieteStorage(SpringCoproprieteRepository springCoproprieteRepository, JpaVilleStorage jpaVilleStorage, JpaSyndicatStorage jpaSyndicatStorage) {
         this.springCoproprieteRepository = springCoproprieteRepository;
-        this.springMandatJpaRepository = springMandatJpaRepository;
-        this.springInformationsCadastralesJpaRepository = springInformationsCadastralesJpaRepository;
         this.jpaVilleStorage = jpaVilleStorage;
         this.jpaSyndicatStorage = jpaSyndicatStorage;
     }
 
-    @Transactional
     @Override
     public void saveAll(List<Copropriete> coproprietes) {
-        updateAllSyndicats(coproprietes);
-        updateAllVilles(coproprietes);
-        coproprietes.parallelStream().forEach(this::createOrUpdate);
+        var allSyndicats = jpaSyndicatStorage.updateAndGetAllSyndicats(coproprietes);
+        var allVilles = jpaVilleStorage.updateAndGetAllVilles(coproprietes);
+        coproprietes.parallelStream().forEach(copro -> createOrUpdate(copro, allVilles, allSyndicats));
     }
 
-    private void updateAllSyndicats(List<Copropriete> coproprietes) {
-        List<Syndicat> syndicats = coproprietes.stream().map(Copropriete::mandat)
-                .filter(Objects::nonNull).map(Mandat::syndicat)
-                .filter(Objects::nonNull).distinct().toList();
-        jpaSyndicatStorage.saveAll(syndicats);
-    }
-
-    private void updateAllVilles(List<Copropriete> coproprietes) {
-        List<Ville> villes = coproprietes.stream().map(Copropriete::adresse)
-                .filter(Objects::nonNull).map(Adresse::ville)
-                .filter(Objects::nonNull).distinct().toList();
-        jpaVilleStorage.saveAll(villes);
-    }
-
-    @Transactional(Transactional.TxType.REQUIRES_NEW)
-    public void createOrUpdate(Copropriete copropriete) {
+    public void createOrUpdate(Copropriete copropriete, List<VilleJpaEntity> villeJpaEntities, List<SyndicatJpaEntity> syndicatJpaEntities) {
         CoproprieteJpaEntity coproprieteJpaEntity = springCoproprieteRepository.findByNumeroImmatriculation(copropriete.numeroImmatriculation())
                 .orElseGet(CoproprieteJpaEntity::new);
         coproprieteJpaEntity.update(copropriete);
-        jpaVilleStorage.find(copropriete.adresse().ville()).ifPresent(coproprieteJpaEntity::setVille);
-        coproprieteJpaEntity = springCoproprieteRepository.save(coproprieteJpaEntity);
+        jpaVilleStorage.find(copropriete.adresse().ville(), villeJpaEntities).ifPresent(coproprieteJpaEntity::setVille);
         createOrUpdateInformationsCadastrales(coproprieteJpaEntity, copropriete);
-        createOrUpdateMandat(copropriete.mandat(), coproprieteJpaEntity);
+        coproprieteJpaEntity = springCoproprieteRepository.save(coproprieteJpaEntity);
+        createOrUpdateMandat(copropriete.mandat(), coproprieteJpaEntity, syndicatJpaEntities);
     }
 
     private void createOrUpdateInformationsCadastrales(CoproprieteJpaEntity coproprieteJpaEntity, Copropriete copropriete) {
         if (coproprieteJpaEntity.getInformationsCadastrales() == null) {
             coproprieteJpaEntity.setInformationsCadastrales(new ArrayList<>());
         }
-        copropriete.informationsCadastrales().forEach(info -> {
-            InformationCadastraleJpaEntity informationCadastrale =
-                    springInformationsCadastralesJpaRepository.findByReference(info.reference()).orElseGet(InformationCadastraleJpaEntity::new);
-            informationCadastrale.update(info);
-            informationCadastrale.setCopropriete(coproprieteJpaEntity);
-            springInformationsCadastralesJpaRepository.save(informationCadastrale);
-            coproprieteJpaEntity.getInformationsCadastrales().add(informationCadastrale);
-        });
+        List<InformationCadastraleJpaEntity> currentInfos = coproprieteJpaEntity.getInformationsCadastrales();
+        copropriete.informationsCadastrales().stream()
+                .map(info -> findOrCreateInfoCadastrale(currentInfos, info))
+                .forEach(currentInfos::add);
     }
 
-    private void createOrUpdateMandat(Mandat mandat, CoproprieteJpaEntity coproprieteJpaEntity) {
-        if (mandat != null && mandat.syndicat() != null) {
-            jpaSyndicatStorage.findBySiret(mandat.syndicat().siret()).ifPresent(s -> {
-                MandatJpaEntity mandatJpaEntity = new MandatJpaEntity();
-                mandatJpaEntity.update(mandat);
-                mandatJpaEntity.setCopropriete(coproprieteJpaEntity);
-                mandatJpaEntity.setSyndicat(s);
-                mandatJpaEntity = springMandatJpaRepository.save(mandatJpaEntity);
-                if (coproprieteJpaEntity.getMandats() == null) {
-                    coproprieteJpaEntity.setMandats(new ArrayList<>());
-                }
-                coproprieteJpaEntity.getMandats().add(mandatJpaEntity);
-            });
-        }
+    private InformationCadastraleJpaEntity findOrCreateInfoCadastrale(List<InformationCadastraleJpaEntity> currentInfos, InformationCadastrale info) {
+        var newInfo = currentInfos.stream()
+                .filter(i -> i.getReference().equals(info.reference()))
+                .findFirst()
+                .orElseGet(InformationCadastraleJpaEntity::new);
+        newInfo.update(info);
+        return newInfo;
     }
+
+    private void createOrUpdateMandat(Mandat mandat, CoproprieteJpaEntity coproprieteJpaEntity, List<SyndicatJpaEntity> syndicatJpaEntities) {
+        if (mandat == null || mandat.syndicat() == null) {
+            return;
+        }
+        if (coproprieteJpaEntity.getMandats() == null) {
+            coproprieteJpaEntity.setMandats(new ArrayList<>());
+        }
+        MandatJpaEntity mandatJpa = findExistingOrCreateNewMandat(coproprieteJpaEntity, mandat.syndicat());
+        mandatJpa.update(mandat);
+        jpaSyndicatStorage.find(mandat.syndicat(), syndicatJpaEntities).ifPresent(mandatJpa::setSyndicat);
+        mandatJpa.setCopropriete(coproprieteJpaEntity);
+        coproprieteJpaEntity.addMandat(mandatJpa);
+    }
+
+    private MandatJpaEntity findExistingOrCreateNewMandat(CoproprieteJpaEntity coproprieteJpaEntity, Syndicat syndicat) {
+        return coproprieteJpaEntity.getMandats().stream()
+                .filter(m -> m.getSyndicat() != null && m.getSyndicat().isSame(syndicat))
+                .findFirst()
+                .orElseGet(MandatJpaEntity::new);
+    }
+
 
 }

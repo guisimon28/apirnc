@@ -9,6 +9,7 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -35,122 +36,12 @@ public class CoproprieteJpaEntity {
     private AdresseJpaEntity adresse;
     @ManyToOne(fetch = FetchType.LAZY)
     private VilleJpaEntity ville;
-    @OneToMany(mappedBy = "copropriete")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "copropriete_id")
     private List<MandatJpaEntity> mandats;
-    @OneToMany(mappedBy = "copropriete")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "copropriete_id")
     private List<InformationCadastraleJpaEntity> informationsCadastrales;
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public String getNumeroImmatriculation() {
-        return numeroImmatriculation;
-    }
-
-    public void setNumeroImmatriculation(String numeroImmatriculation) {
-        this.numeroImmatriculation = numeroImmatriculation;
-    }
-
-    public String getNomUsage() {
-        return nomUsage;
-    }
-
-    public void setNomUsage(String nomUsage) {
-        this.nomUsage = nomUsage;
-    }
-
-    public LocalDate getDateReglement() {
-        return dateReglement;
-    }
-
-    public void setDateReglement(LocalDate dateReglement) {
-        this.dateReglement = dateReglement;
-    }
-
-    public boolean isResidenceService() {
-        return residenceService;
-    }
-
-    public void setResidenceService(boolean residenceService) {
-        this.residenceService = residenceService;
-    }
-
-    public PeriodeConstructionRangeJpaEnum getPeriodeConstruction() {
-        return periodeConstruction;
-    }
-
-    public void setPeriodeConstruction(PeriodeConstructionRangeJpaEnum periodeConstruction) {
-        this.periodeConstruction = periodeConstruction;
-    }
-
-    public boolean isDansActionCoeurDeVille() {
-        return dansActionCoeurDeVille;
-    }
-
-    public void setDansActionCoeurDeVille(boolean dansActionCoeurDeVille) {
-        this.dansActionCoeurDeVille = dansActionCoeurDeVille;
-    }
-
-    public boolean isDansPetiteVilleDeDemain() {
-        return dansPetiteVilleDeDemain;
-    }
-
-    public void setDansPetiteVilleDeDemain(boolean dansPetiteVilleDeDemain) {
-        this.dansPetiteVilleDeDemain = dansPetiteVilleDeDemain;
-    }
-
-    public boolean isAidee() {
-        return aidee;
-    }
-
-    public void setAidee(boolean aidee) {
-        this.aidee = aidee;
-    }
-
-    public int getNombreLotTotal() {
-        return nombreLotTotal;
-    }
-
-    public void setNombreLotTotal(int nombreLotTotal) {
-        this.nombreLotTotal = nombreLotTotal;
-    }
-
-    public int getNombreLotUsageHabitationBureauxCommerces() {
-        return nombreLotUsageHabitationBureauxCommerces;
-    }
-
-    public void setNombreLotUsageHabitationBureauxCommerces(int nombreLotUsageHabitationBureauxCommerces) {
-        this.nombreLotUsageHabitationBureauxCommerces = nombreLotUsageHabitationBureauxCommerces;
-    }
-
-    public int getNombreLotUsageHabitation() {
-        return nombreLotUsageHabitation;
-    }
-
-    public void setNombreLotUsageHabitation(int nombreLotUsageHabitation) {
-        this.nombreLotUsageHabitation = nombreLotUsageHabitation;
-    }
-
-    public int getNombreLotStationnement() {
-        return nombreLotStationnement;
-    }
-
-    public void setNombreLotStationnement(int nombreLotStationnement) {
-        this.nombreLotStationnement = nombreLotStationnement;
-    }
-
-    public AdresseJpaEntity getAdresse() {
-        return adresse;
-    }
-
-    public void setAdresse(AdresseJpaEntity adresse) {
-        this.adresse = adresse;
-    }
 
     public VilleJpaEntity getVille() {
         return ville;
@@ -212,6 +103,13 @@ public class CoproprieteJpaEntity {
         this.adresse.update(adresse);
     }
 
+    public void addMandat(MandatJpaEntity mandat) {
+        if (mandats == null) {
+            mandats = new ArrayList<>();
+        }
+        mandats.add(mandat);
+    }
+
     @Override
     public String toString() {
         return "CoproprieteJpaEntity{" +
@@ -233,4 +131,5 @@ public class CoproprieteJpaEntity {
                 ", informationsCadastrales=" + informationsCadastrales +
                 '}';
     }
+
 }

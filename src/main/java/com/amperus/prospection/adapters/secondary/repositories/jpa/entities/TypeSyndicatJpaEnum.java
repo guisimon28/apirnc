@@ -9,6 +9,7 @@ public enum TypeSyndicatJpaEnum {
 
     public static TypeSyndicatJpaEnum convertFromModel(TypeSyndicat type) {
         return switch (type) {
+            case null -> null;
             case TypeSyndicat.BENEVOLE -> TypeSyndicatJpaEnum.BENEVOLE;
             case TypeSyndicat.PROFESSIONNEL -> TypeSyndicatJpaEnum.PROFESSIONNEL;
             default -> TypeSyndicatJpaEnum.INCONNU;

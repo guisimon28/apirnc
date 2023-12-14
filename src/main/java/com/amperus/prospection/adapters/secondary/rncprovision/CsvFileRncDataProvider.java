@@ -9,12 +9,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Stream;
+import java.util.stream.IntStream;
+
+import static com.amperus.prospection.adapters.secondary.rncprovision.CsvHeader.*;
+import static com.amperus.prospection.adapters.secondary.rncprovision.CsvParserUtils.*;
 
 public class CsvFileRncDataProvider implements RncDataProvider {
 
@@ -23,7 +25,6 @@ public class CsvFileRncDataProvider implements RncDataProvider {
     private static final Map<String, PeriodeConstructionRange> mappingPeriodeConstructionRange;
 
     private static final Logger LOGGER = Logger.getLogger(CsvFileRncDataProvider.class.getName());
-
 
     static {
         mappingPeriodeConstructionRange = new HashMap<>();
@@ -51,15 +52,17 @@ public class CsvFileRncDataProvider implements RncDataProvider {
         try {
             Copropriete copropriete = getCoproprieteFromRecord(csvRecord);
             coproprietes.add(copropriete);
+        } catch (NumberFormatException | DateTimeParseException e) {
+            LOGGER.log(Level.SEVERE, "Erreur de format lors de l'intégration de l'enregistrement: " + csvRecord, e);
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Erreur lors de l'intégration de l'enregistrement {0}", csvRecord);
+            LOGGER.log(Level.SEVERE, "Erreur inattendue lors de l'intégration de l'enregistrement: " + csvRecord, e);
         }
     }
 
     private Copropriete getCoproprieteFromRecord(CSVRecord csvRecord) {
         return new Copropriete.Builder()
-                .numeroImmatriculation(csvRecord.get("Numéro d'immatriculation"))
-                .nomUsage(csvRecord.get("Nom d’usage de la copropriété"))
+                .numeroImmatriculation(csvRecord.get(NUMERO_IMMATRICULATION.getLabel()))
+                .nomUsage(csvRecord.get(NOM_USAGE.getLabel()))
                 .informationsCadastrales(getInformationsCadastralesFromRecord(csvRecord))
                 .lots(getLotsFromRecord(csvRecord))
                 .adresse(getAdresseFromRecord(csvRecord))
@@ -69,20 +72,21 @@ public class CsvFileRncDataProvider implements RncDataProvider {
     }
 
     private List<InformationCadastrale> getInformationsCadastralesFromRecord(CSVRecord csvRecord) {
-        return Stream.of(getInformationsCadastralesFromRecordAndIndex(csvRecord, 1), getInformationsCadastralesFromRecordAndIndex(csvRecord, 2), getInformationsCadastralesFromRecordAndIndex(csvRecord, 3))
+        return IntStream.rangeClosed(1, 3)
+                .mapToObj(index -> getInformationsCadastralesFromRecordAndIndex(csvRecord, index))
                 .filter(Optional::isPresent)
-                .map(Optional::get).toList();
+                .map(Optional::get)
+                .toList();
     }
 
     private Optional<InformationCadastrale> getInformationsCadastralesFromRecordAndIndex(CSVRecord csvRecord, int index) {
         InformationCadastrale informationCadastrale = new InformationCadastrale.Builder()
-                .reference(csvRecord.get("Référence Cadastrale " + index))
-                .codeINSEECommune(csvRecord.get("Code INSEE commune " + index))
-                .prefixe(csvRecord.get("Préfixe " + index))
-                .section(csvRecord.get("Section " + index))
-                .numeroParcelle(csvRecord.get("Numéro parcelle " + index)).build();
-        if (!informationCadastrale.numeroParcelle().isEmpty() && !informationCadastrale.codeINSEECommune().isEmpty() && !informationCadastrale.prefixe()
-                .isEmpty() && !informationCadastrale.section().isEmpty() && !informationCadastrale.reference().isEmpty()) {
+                .reference(csvRecord.get(REFERENCE_CADASTRALE.getLabel() + index))
+                .codeINSEECommune(csvRecord.get(CODE_INSEE_COMMUNE.getLabel() + index))
+                .prefixe(csvRecord.get(PREFIXE.getLabel() + index))
+                .section(csvRecord.get(SECTION.getLabel() + index))
+                .numeroParcelle(csvRecord.get(NUMERO_PARCELLE.getLabel() + index)).build();
+        if (!informationCadastrale.reference().isEmpty()) {
             return Optional.of(informationCadastrale);
         }
         return Optional.empty();
@@ -90,50 +94,49 @@ public class CsvFileRncDataProvider implements RncDataProvider {
 
     private Lots getLotsFromRecord(CSVRecord csvRecord) {
         return new Lots.Builder()
-                .nombreTotal(Integer.parseInt(csvRecord.get("Nombre total de lots")))
-                .nombreStationnement(Integer.parseInt(csvRecord.get("Nombre de lots de stationnement")))
-                .nombreUsageHabitation(Integer.parseInt(csvRecord.get("Nombre de lots à usage d’habitation")))
-                .nombreUsageHabitationBureauxCommerces(Integer.parseInt(csvRecord.get("Nombre total de lots à usage d’habitation, de bureaux ou de commerces")))
+                .nombreTotal(parseInt(csvRecord.get(NOMBRE_TOTAL_LOTS.getLabel())))
+                .nombreStationnement(parseInt(csvRecord.get(NOMBRE_LOTS_STATIONNEMENT.getLabel())))
+                .nombreUsageHabitation(parseInt(csvRecord.get(NOMBRE_LOTS_HABITATION.getLabel())))
+                .nombreUsageHabitationBureauxCommerces(parseInt(csvRecord.get(NOMBRE_LOTS_HABITATION_BUREAUX_COMMERCES.getLabel())))
                 .build();
     }
 
     private Mandat getMandatFromRecord(CSVRecord csvRecord) {
         return new Mandat.Builder()
-                .statut(MandatStatut.findFromLabel(csvRecord.get("Mandat en cours dans la copropriété")).orElse(null))
+                .statut(MandatStatut.findFromLabel(csvRecord.get(MANDAT_EN_COURS.getLabel())).orElse(null))
                 .syndicat(getSyndicatFromRecord(csvRecord))
                 .build();
     }
 
     private Syndicat getSyndicatFromRecord(CSVRecord csvRecord) {
-        if (csvRecord.get("Siret représentant légal (si existe)").equalsIgnoreCase("non connu")) {
+        if (csvRecord.get(SIRET_REPRESENTANT.getLabel()).equalsIgnoreCase("non connu")) {
             return null;
         }
         return new Syndicat.Builder()
-                .raisonSociale(csvRecord.get("Identification du représentant légal  (raison sociale et le numéro SIRET du syndic professionnel ou Civilité/prénom/ nom " +
-                        "du syndic bénévole ou coopératif)"))
-                .codeApe(csvRecord.get("Code APE"))
-                .siret(csvRecord.get("Siret représentant légal (si existe)"))
-                .commune(csvRecord.get("Commune du représentant légal"))
-                .type(TypeSyndicat.findFromLabel(csvRecord.get("Type de syndic : bénévole / professionnel / non connu")).orElse(null))
-                .cooperatif(csvRecord.get("Syndicat coopératif").equalsIgnoreCase("oui"))
+                .raisonSociale(csvRecord.get(IDENTIFICATION_REPRESENTANT.getLabel()))
+                .codeApe(csvRecord.get(CODE_APE.getLabel()))
+                .siret(csvRecord.get(SIRET_REPRESENTANT.getLabel()))
+                .commune(csvRecord.get(COMMUNE_REPRESENTANT.getLabel()))
+                .type(TypeSyndicat.findFromLabel(csvRecord.get(TYPE_SYNDIC.getLabel())).orElse(null))
+                .cooperatif(parseBoolean(csvRecord.get(SYNDICAT_COOPERATIF.getLabel())))
                 .build();
     }
 
     private Caracteristique getCaracteristiqueFromRecord(CSVRecord csvRecord) {
         return new Caracteristique.Builder()
-                .dateReglement(LocalDate.parse(csvRecord.get("Date du règlement de copropriété"), DateTimeFormatter.ofPattern("yyyy-MM-dd")))
-                .residenceService(csvRecord.get("Résidence service").equalsIgnoreCase("oui"))
-                .aidee(csvRecord.get("Copro aidée").equalsIgnoreCase("oui"))
-                .dansActionCoeurDeVille(csvRecord.get("Copro dans ACV").equalsIgnoreCase("oui"))
-                .dansPetiteVilleDeDemain(csvRecord.get("Copro dans PVD").equalsIgnoreCase("oui"))
-                .periodeConstruction(mappingPeriodeConstructionRange.get(csvRecord.get("Période de construction")))
+                .dateReglement(parseLocalDate(csvRecord.get(DATE_REGLEMENT.getLabel()), "yyyy-MM-dd").orElse(null))
+                .residenceService(parseBoolean(csvRecord.get(RESIDENCE_SERVICE.getLabel())))
+                .aidee(parseBoolean(csvRecord.get(COPRO_AIDEE.getLabel())))
+                .dansActionCoeurDeVille(parseBoolean(csvRecord.get(COPRO_ACV.getLabel())))
+                .dansPetiteVilleDeDemain(parseBoolean(csvRecord.get(COPRO_PVD.getLabel())))
+                .periodeConstruction(mappingPeriodeConstructionRange.get(csvRecord.get(PERIODE_CONSTRUCTION.getLabel())))
                 .build();
     }
 
     private Adresse getAdresseFromRecord(CSVRecord csvRecord) {
         return new Adresse.Builder()
-                .numeroEtVoie(csvRecord.get("Numéro et Voie (adresse de référence)"))
-                .codePostal(csvRecord.get("Code postal (adresse de référence)"))
+                .numeroEtVoie(csvRecord.get(NUMERO_ET_VOIE.getLabel()))
+                .codePostal(csvRecord.get(CODE_POSTAL.getLabel()))
                 .ville(getVilleFromRecord(csvRecord))
                 .coordonneesGeographiques(getCoordonneesGeographiques(csvRecord))
                 .build();
@@ -141,38 +144,35 @@ public class CsvFileRncDataProvider implements RncDataProvider {
 
     private CoordonneesGeographiques getCoordonneesGeographiques(CSVRecord csvRecord) {
         return new CoordonneesGeographiques.Builder()
-                .latitude(Double.parseDouble(csvRecord.get("lat")))
-                .longitude(Double.parseDouble(csvRecord.get("long")))
+                .latitude(parseDouble(csvRecord.get(LATITUDE.getLabel())))
+                .longitude(parseDouble(csvRecord.get(LONGITUDE.getLabel())))
                 .build();
     }
 
     private Ville getVilleFromRecord(CSVRecord csvRecord) {
-
         Region region = getRegionFromRecord(csvRecord);
-
         Departement departement = getDepartementFromRecord(csvRecord, region);
-
         return new Ville.Builder()
-                .codeOfficiel(csvRecord.get("Code Officiel Commune"))
-                .nomOfficiel(csvRecord.get("Nom Officiel Commune"))
-                .codeOfficielArrondissement(csvRecord.get("Code Officiel Arrondissement Commune"))
-                .nomOfficielArrondissement(csvRecord.get("Nom Officiel Arrondissement Commune"))
+                .codeOfficiel(csvRecord.get(CODE_OFFICIEL_COMMUNE.getLabel()))
+                .nomOfficiel(csvRecord.get(NOM_OFFICIEL_COMMUNE.getLabel()))
+                .codeOfficielArrondissement(csvRecord.get(CODE_OFFICIEL_ARRONDISSEMENT.getLabel()))
+                .nomOfficielArrondissement(csvRecord.get(NOM_OFFICIEL_ARRONDISSEMENT.getLabel()))
                 .departement(departement)
                 .build();
     }
 
     private static Departement getDepartementFromRecord(CSVRecord csvRecord, Region region) {
         return new Departement.Builder()
-                .codeOfficiel(csvRecord.get("Code Officiel Département"))
-                .nomOfficiel(csvRecord.get("Nom Officiel Département"))
+                .codeOfficiel(csvRecord.get(CODE_OFFICIEL_DEPARTEMENT.getLabel()))
+                .nomOfficiel(csvRecord.get(NOM_OFFICIEL_DEPARTEMENT.getLabel()))
                 .region(region)
                 .build();
     }
 
     private static Region getRegionFromRecord(CSVRecord csvRecord) {
         return new Region.Builder()
-                .codeOfficiel(csvRecord.get("Code Officiel Région"))
-                .nomOfficiel(csvRecord.get("Nom Officiel Région"))
+                .codeOfficiel(csvRecord.get(CODE_OFFICIEL_REGION.getLabel()))
+                .nomOfficiel(csvRecord.get(NOM_OFFICIEL_REGION.getLabel()))
                 .build();
     }
 

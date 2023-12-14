@@ -19,60 +19,16 @@ public class SyndicatJpaEntity {
     private String codeAPE;
     private boolean cooperatif;
 
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public TypeSyndicatJpaEnum getType() {
-        return type;
-    }
-
-    public void setType(TypeSyndicatJpaEnum type) {
-        this.type = type;
-    }
-
-    public String getRaisonSociale() {
-        return raisonSociale;
-    }
-
-    public void setRaisonSociale(String raisonSociale) {
-        this.raisonSociale = raisonSociale;
-    }
-
-    public String getSiret() {
-        return siret;
-    }
-
-    public void setSiret(String siret) {
-        this.siret = siret;
-    }
-
-    public String getCodeAPE() {
-        return codeAPE;
-    }
-
-    public void setCodeAPE(String codeAPE) {
-        this.codeAPE = codeAPE;
-    }
-
-    public boolean isCooperatif() {
-        return cooperatif;
-    }
-
-    public void setCooperatif(boolean cooperatif) {
-        this.cooperatif = cooperatif;
-    }
-
     public void update(Syndicat syndicat) {
         this.raisonSociale = syndicat.raisonSociale();
         this.siret = syndicat.siret();
         this.codeAPE = syndicat.codeAPE();
         this.type = TypeSyndicatJpaEnum.convertFromModel(syndicat.type());
         this.cooperatif = syndicat.cooperatif();
+    }
+
+    public boolean isSame(Syndicat syndicat) {
+        return siret.equalsIgnoreCase(syndicat.siret());
     }
 
     @Override
@@ -86,4 +42,5 @@ public class SyndicatJpaEntity {
                 ", cooperatif=" + cooperatif +
                 '}';
     }
+
 }
