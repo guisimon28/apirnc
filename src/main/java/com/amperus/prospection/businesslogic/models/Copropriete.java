@@ -23,6 +23,17 @@ public record Copropriete(
         private Adresse adresse;
         private Caracteristique caracteristique;
 
+        public Builder copropriete(Copropriete copropriete) {
+            this.numeroImmatriculation = copropriete.numeroImmatriculation;
+            this.nomUsage = copropriete.nomUsage;
+            this.informationsCadastrales = copropriete.informationsCadastrales;
+            this.lots = copropriete.lots;
+            this.adresse = copropriete.adresse;
+            this.mandat = copropriete.mandat;
+            this.caracteristique = copropriete.caracteristique;
+            return this;
+        }
+
         public Builder numeroImmatriculation(String numeroImmatriculation) {
             this.numeroImmatriculation = numeroImmatriculation;
             return this;

@@ -1,4 +1,4 @@
-package integration.prospection;
+package integration.prospection.repositories;
 
 import com.amperus.prospection.businesslogic.models.*;
 
@@ -79,6 +79,14 @@ class CoproprieteTestDataFactory {
                 .informationsCadastrales(aListOfInformationCadastrales())
                 .adresse(anAdresse().build())
                 .caracteristique(aCaracteristique().build());
+    }
+
+    public static Copropriete.Builder aCoproprieteWithEmptyStreet() {
+        Adresse adresse = anAdresse().numeroEtVoie(null).build();
+
+        return new Copropriete.Builder()
+                .copropriete(aCopropriete().build())
+                .adresse(adresse);
     }
 
 }

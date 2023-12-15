@@ -19,5 +19,4 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @TestPropertySource(locations = "classpath:application-e2e.properties")
 @Import(DependenciesConfigurationE2e.class)
 public abstract class BaseE2e extends TestContainers {
-
 }

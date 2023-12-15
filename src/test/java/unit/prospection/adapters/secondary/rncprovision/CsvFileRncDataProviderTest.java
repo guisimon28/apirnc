@@ -1,4 +1,4 @@
-package unit.prospection.adapters.secondary;
+package unit.prospection.adapters.secondary.rncprovision;
 
 import com.amperus.prospection.adapters.secondary.rncprovision.CsvFileRncDataProvider;
 import com.amperus.prospection.businesslogic.models.Copropriete;

@@ -55,6 +55,7 @@ class CoproprieteTestDataFactory {
         return new Adresse.Builder()
                 .numeroEtVoie("123 Rue de la Copropriété")
                 .codePostal("75000")
+                .coordonneesGeographiques(new CoordonneesGeographiques(-122.254775, 37.869085))
                 .ville(aVille().build());
     }
 
@@ -77,6 +78,14 @@ class CoproprieteTestDataFactory {
                 .informationsCadastrales(aListOfInformationCadastrales())
                 .adresse(anAdresse().build())
                 .caracteristique(aCaracteristique().build());
+    }
+
+    public static Copropriete.Builder aCoproprieteWithEmptyStreet() {
+        Adresse adresse = anAdresse().numeroEtVoie(null).build();
+
+        return new Copropriete.Builder()
+                .copropriete(aCopropriete().build())
+                .adresse(adresse);
     }
 
 }

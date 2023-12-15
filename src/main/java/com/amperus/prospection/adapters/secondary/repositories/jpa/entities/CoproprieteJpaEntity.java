@@ -43,6 +43,14 @@ public class CoproprieteJpaEntity {
     @JoinColumn(name = "copropriete_id")
     private List<InformationCadastraleJpaEntity> informationsCadastrales;
 
+    public AdresseJpaEntity getAdresse() {
+        return adresse;
+    }
+
+    public void setAdresse(AdresseJpaEntity adresse) {
+        this.adresse = adresse;
+    }
+
     public VilleJpaEntity getVille() {
         return ville;
     }

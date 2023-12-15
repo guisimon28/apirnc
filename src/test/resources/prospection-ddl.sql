@@ -8,7 +8,7 @@ CREATE TABLE departements (
  id BIGSERIAL PRIMARY KEY,
  code_officiel VARCHAR(255),
  nom_officiel VARCHAR(255),
- region_id BIGSERIAL,
+ region_id BIGINT NULL,
  FOREIGN KEY (region_id) REFERENCES regions(id)
 );
 
@@ -18,7 +18,7 @@ CREATE TABLE villes (
  nom_officiel VARCHAR(255),
  code_officiel_arrondissement VARCHAR(255),
  nom_officiel_arrondissement VARCHAR(255),
- departement_id BIGSERIAL,
+ departement_id BIGINT NULL,
  FOREIGN KEY (departement_id) REFERENCES departements(id)
 );
 
@@ -37,9 +37,10 @@ CREATE TABLE coproprietes (
  nombre_lot_usage_habitation INT,
  nombre_lot_stationnement INT,
  numero_et_voie VARCHAR(255),
+ numero_et_voie_gpx VARCHAR(255),
  latitude DOUBLE PRECISION NOT NULL,
  longitude DOUBLE PRECISION NOT NULL,
- ville_id BIGSERIAL,
+ ville_id BIGINT NULL,
  FOREIGN KEY (ville_id) REFERENCES villes(id)
 );
 

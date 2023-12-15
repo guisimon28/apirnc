@@ -6,7 +6,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 class CoproprieteTestDataFactory {
-
     public static Syndicat.Builder aSyndicat() {
         return new Syndicat.Builder()
                 .type(TypeSyndicat.PROFESSIONNEL)
@@ -56,7 +55,7 @@ class CoproprieteTestDataFactory {
         return new Adresse.Builder()
                 .numeroEtVoie("123 Rue de la Copropriété")
                 .codePostal("75000")
-                .coordonneesGeographiques(new CoordonneesGeographiques(-122.254775, 37.869085))
+                .coordonneesGeographiques(new CoordonneesGeographiques(1.881273, 43.08654))
                 .ville(aVille().build());
     }
 
@@ -79,6 +78,15 @@ class CoproprieteTestDataFactory {
                 .informationsCadastrales(aListOfInformationCadastrales())
                 .adresse(anAdresse().build())
                 .caracteristique(aCaracteristique().build());
+    }
+
+
+    public static Copropriete.Builder aCoproprieteWithEmptyStreet() {
+        Adresse adresse = anAdresse().numeroEtVoie(null).build();
+
+        return new Copropriete.Builder()
+                .copropriete(aCopropriete().build())
+                .adresse(adresse);
     }
 
 }
