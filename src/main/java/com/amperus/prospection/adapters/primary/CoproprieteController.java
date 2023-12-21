@@ -1,7 +1,6 @@
 package com.amperus.prospection.adapters.primary;
 
 import com.amperus.prospection.businesslogic.models.Copropriete;
-import com.amperus.prospection.businesslogic.usecases.CompleterNumeroEtVoie;
 import com.amperus.prospection.businesslogic.usecases.GetCopropriete;
 import com.amperus.prospection.businesslogic.usecases.ImportRegistreNationalCopropriete;
 import org.springframework.http.HttpStatus;
@@ -13,25 +12,16 @@ import org.springframework.web.bind.annotation.*;
 public class CoproprieteController {
     private final ImportRegistreNationalCopropriete importRegistreNationalCopropriete;
 
-    private final CompleterNumeroEtVoie completerNumeroEtVoie;
-
     private final GetCopropriete getCopropriete;
 
-    public CoproprieteController(ImportRegistreNationalCopropriete importRegistreNationalCopropriete, CompleterNumeroEtVoie completerNumeroEtVoie, GetCopropriete getCopropriete) {
+    public CoproprieteController(ImportRegistreNationalCopropriete importRegistreNationalCopropriete, GetCopropriete getCopropriete) {
         this.importRegistreNationalCopropriete = importRegistreNationalCopropriete;
-        this.completerNumeroEtVoie = completerNumeroEtVoie;
         this.getCopropriete = getCopropriete;
     }
 
     @PostMapping(path = "/import")
     public ResponseEntity<Void> importerRegistre() {
         importRegistreNationalCopropriete.handle();
-        return new ResponseEntity<>(HttpStatus.CREATED);
-    }
-
-    @PostMapping(path = "/completeMissingStreet")
-    public ResponseEntity<Void> completeMissingStreet() {
-        completerNumeroEtVoie.handle();
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

@@ -55,7 +55,9 @@ class AddressFormatterTest {
         return Stream.of(
                 Arguments.of("18 r saint-gabriel 13014 Marseille", convertToAddress("18 Rue Saint-Gabriel", "13014", "Marseille")),
                 Arguments.of("r du couvent, 40480 Vieux-Boucau-les-Bains", convertToAddress("Rue du Couvent", "40480", "Vieux-Boucau-les-Bains")),
-                Arguments.of("32 RUE MAURICE BERNARD", convertToAddress(null, null, null))
+                Arguments.of("32 RUE MAURICE BERNARD", convertToAddress("32 Rue Maurice Bernard", null, null)),
+                Arguments.of("2 rue paul claudel 02400", convertToAddress("2 Rue Paul Claudel", null, null)),
+                Arguments.of("25 bd carabacel 6000 NICE", convertToAddress("25 Boulevard Carabacel", "06000", "Nice"))
         );
     }
 

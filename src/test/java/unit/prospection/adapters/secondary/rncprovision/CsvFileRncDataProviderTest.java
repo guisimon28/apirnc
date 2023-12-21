@@ -23,7 +23,7 @@ class CsvFileRncDataProviderTest {
     @Test
     void should_have_valid_data_when_parsing_rnc_csv_file() {
         List<Copropriete> coproprietes = rncDataProvider.findAllCopropriete();
-        assertThat(coproprietes).hasSize(2)
+        assertThat(coproprietes).hasSize(3)
                 .contains(RncCsvFileCoproprieteTestDataFactory.aCopropriete().build());
     }
 }
