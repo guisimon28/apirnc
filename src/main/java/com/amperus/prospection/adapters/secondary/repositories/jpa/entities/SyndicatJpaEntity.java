@@ -17,6 +17,7 @@ public class SyndicatJpaEntity {
     private String raisonSociale;
     private String siret;
     private String codeAPE;
+    private String commune;
     private boolean cooperatif;
 
     public void update(Syndicat syndicat) {
@@ -25,10 +26,21 @@ public class SyndicatJpaEntity {
         this.codeAPE = syndicat.codeAPE();
         this.type = TypeSyndicatJpaEnum.convertFromModel(syndicat.type());
         this.cooperatif = syndicat.cooperatif();
+        this.commune = syndicat.commune();
     }
 
     public boolean isSame(Syndicat syndicat) {
         return siret.equalsIgnoreCase(syndicat.siret());
+    }
+
+    public Syndicat convertToDomain() {
+        return new Syndicat.Builder()
+                .siret(siret)
+                .raisonSociale(raisonSociale)
+                .codeApe(codeAPE)
+                .commune(commune)
+                .type(TypeSyndicatJpaEnum.convertToDomain(type))
+                .build();
     }
 
     @Override

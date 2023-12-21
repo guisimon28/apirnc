@@ -1,23 +1,23 @@
 CREATE TABLE regions (
  id BIGSERIAL PRIMARY KEY,
- code_officiel VARCHAR(255),
- nom_officiel VARCHAR(255)
+ code VARCHAR(255),
+ nom VARCHAR(255)
 );
 
 CREATE TABLE departements (
  id BIGSERIAL PRIMARY KEY,
- code_officiel VARCHAR(255),
- nom_officiel VARCHAR(255),
+ code VARCHAR(255),
+ nom VARCHAR(255),
  region_id BIGINT NULL,
  FOREIGN KEY (region_id) REFERENCES regions(id)
 );
 
 CREATE TABLE villes (
  id BIGSERIAL PRIMARY KEY,
- code_officiel VARCHAR(255),
- nom_officiel VARCHAR(255),
- code_officiel_arrondissement VARCHAR(255),
- nom_officiel_arrondissement VARCHAR(255),
+ code_postal VARCHAR(255),
+ nom VARCHAR(255),
+ code_arrondissement VARCHAR(255),
+ nom_arrondissement VARCHAR(255),
  departement_id BIGINT NULL,
  FOREIGN KEY (departement_id) REFERENCES departements(id)
 );
@@ -61,6 +61,7 @@ CREATE TABLE syndicats (
  siret VARCHAR(255),
  type VARCHAR(255),
  code_ape VARCHAR(255),
+ commune VARCHAR(255),
  cooperatif boolean default false
 );
 
@@ -73,7 +74,3 @@ CREATE TABLE mandats (
  FOREIGN KEY (copropriete_id) REFERENCES coproprietes(id),
  FOREIGN KEY (syndicat_id) REFERENCES syndicats(id)
 );
-
-CREATE INDEX idx_numero_immatriculation ON coproprietes (numero_immatriculation);
-CREATE INDEX idx_siret ON syndicats (siret);
-CREATE INDEX idx_ville ON villes (code_officiel,nom_officiel,code_officiel_arrondissement);

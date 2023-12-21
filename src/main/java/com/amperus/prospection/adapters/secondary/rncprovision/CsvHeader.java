@@ -26,6 +26,7 @@ enum CsvHeader {
     COPRO_ACV("Copro dans ACV"),
     COPRO_PVD("Copro dans PVD"),
     PERIODE_CONSTRUCTION("Période de construction"),
+    ADRESSE_REFERENCE("Adresse de référence"),
     NUMERO_ET_VOIE("Numéro et Voie (adresse de référence)"),
     CODE_POSTAL("Code postal (adresse de référence)"),
     LATITUDE("lat"),
@@ -43,10 +44,6 @@ enum CsvHeader {
 
     CsvHeader(String label) {
         this.label = label;
-    }
-
-    CsvHeader() {
-        this.label = name();
     }
 
     public String getLabel() {

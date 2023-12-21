@@ -1,18 +1,18 @@
 package com.amperus.prospection.businesslogic.models;
 
-public record Departement(String codeOfficiel, String nomOfficiel, Region region) {
+public record Departement(String code, String nom, Region region) {
     public static class Builder {
-        private String codeOfficiel;
-        private String nomOfficiel;
+        private String code;
+        private String nom;
         private Region region;
 
-        public Builder codeOfficiel(String codeOfficiel) {
-            this.codeOfficiel = codeOfficiel;
+        public Builder code(String codeOfficiel) {
+            this.code = codeOfficiel;
             return this;
         }
 
-        public Builder nomOfficiel(String nomOfficiel) {
-            this.nomOfficiel = nomOfficiel;
+        public Builder nom(String nomOfficiel) {
+            this.nom = nomOfficiel;
             return this;
         }
 
@@ -22,7 +22,7 @@ public record Departement(String codeOfficiel, String nomOfficiel, Region region
         }
 
         public Departement build() {
-            return new Departement(codeOfficiel, nomOfficiel, region);
+            return new Departement(code, nom, region);
         }
     }
 }

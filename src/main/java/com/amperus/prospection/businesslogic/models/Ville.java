@@ -1,31 +1,24 @@
 package com.amperus.prospection.businesslogic.models;
 
-public record Ville(String codeOfficiel, String nomOfficiel, String codeOfficielArrondissement,
-                    String nomOfficielArrondissement, Departement departement) {
+public record Ville(String codePostal, String nom, Arrondissement arrondissement, Departement departement) {
     public static class Builder {
-        private String codeOfficiel;
-        private String nomOfficiel;
-        private String codeOfficielArrondissement;
-        private String nomOfficielArrondissement;
+        private String codePostal;
+        private String nom;
+        private Arrondissement arrondissement;
         private Departement departement;
 
-        public Builder codeOfficiel(String codeOfficiel) {
-            this.codeOfficiel = codeOfficiel;
+        public Builder codePostal(String codePostal) {
+            this.codePostal = codePostal;
             return this;
         }
 
-        public Builder nomOfficiel(String nomOfficiel) {
-            this.nomOfficiel = nomOfficiel;
+        public Builder nom(String nom) {
+            this.nom = nom;
             return this;
         }
 
-        public Builder codeOfficielArrondissement(String codeOfficielArrondissement) {
-            this.codeOfficielArrondissement = codeOfficielArrondissement;
-            return this;
-        }
-
-        public Builder nomOfficielArrondissement(String nomOfficielArrondissement) {
-            this.nomOfficielArrondissement = nomOfficielArrondissement;
+        public Builder arrondissement(Arrondissement arrondissement) {
+            this.arrondissement = arrondissement;
             return this;
         }
 
@@ -35,7 +28,7 @@ public record Ville(String codeOfficiel, String nomOfficiel, String codeOfficiel
         }
 
         public Ville build() {
-            return new Ville(codeOfficiel, nomOfficiel, codeOfficielArrondissement, nomOfficielArrondissement, departement);
+            return new Ville(codePostal, nom, arrondissement, departement);
         }
     }
 }

@@ -33,6 +33,17 @@ public class InformationCadastraleJpaEntity {
         this.prefixe = informationCadastrale.prefixe();
         this.reference = informationCadastrale.reference();
     }
+
+    public InformationCadastrale convertToDomain() {
+        return new InformationCadastrale.Builder()
+                .reference(reference)
+                .codeINSEECommune(codeInseeCommune)
+                .prefixe(prefixe)
+                .section(section)
+                .numeroParcelle(numeroParcelle)
+                .build();
+    }
+
     @Override
     public String toString() {
         return "InformationCadastraleJpaEntity{" +

@@ -134,12 +134,20 @@ public class CsvFileRncDataProvider implements RncDataProvider {
     }
 
     private Adresse getAdresseFromRecord(CSVRecord csvRecord) {
-        return new Adresse.Builder()
-                .numeroEtVoie(csvRecord.get(NUMERO_ET_VOIE.getLabel()))
+        var villeBuilder = getVilleBuilderFromRecord(csvRecord);
+        var address = new Adresse.Builder()
+                .numeroEtVoie(AddressFormatterUtils.formatAddress(csvRecord.get(NUMERO_ET_VOIE.getLabel())))
                 .codePostal(csvRecord.get(CODE_POSTAL.getLabel()))
-                .ville(getVilleFromRecord(csvRecord))
-                .coordonneesGeographiques(getCoordonneesGeographiques(csvRecord))
-                .build();
+                .coordonneesGeographiques(getCoordonneesGeographiques(csvRecord));
+
+        var referenceAdresse = AddressExtractorUtils.extractAddress(csvRecord.get(ADRESSE_REFERENCE.getLabel()));
+        if (referenceAdresse.isComplete()) {
+            address.numeroEtVoie(referenceAdresse.numeroEtVoie());
+            villeBuilder.codePostal(referenceAdresse.codePostal());
+            villeBuilder.nom(referenceAdresse.ville().nom());
+        }
+        address.ville(villeBuilder.build());
+        return address.build();
     }
 
     private CoordonneesGeographiques getCoordonneesGeographiques(CSVRecord csvRecord) {
@@ -149,30 +157,35 @@ public class CsvFileRncDataProvider implements RncDataProvider {
                 .build();
     }
 
-    private Ville getVilleFromRecord(CSVRecord csvRecord) {
+    private Ville.Builder getVilleBuilderFromRecord(CSVRecord csvRecord) {
         Region region = getRegionFromRecord(csvRecord);
         Departement departement = getDepartementFromRecord(csvRecord, region);
         return new Ville.Builder()
-                .codeOfficiel(csvRecord.get(CODE_OFFICIEL_COMMUNE.getLabel()))
-                .nomOfficiel(csvRecord.get(NOM_OFFICIEL_COMMUNE.getLabel()))
-                .codeOfficielArrondissement(csvRecord.get(CODE_OFFICIEL_ARRONDISSEMENT.getLabel()))
-                .nomOfficielArrondissement(csvRecord.get(NOM_OFFICIEL_ARRONDISSEMENT.getLabel()))
-                .departement(departement)
+                .codePostal(csvRecord.get(CODE_OFFICIEL_COMMUNE.getLabel()))
+                .nom(csvRecord.get(NOM_OFFICIEL_COMMUNE.getLabel()))
+                .arrondissement(getArrondissement(csvRecord))
+                .departement(departement);
+    }
+
+    private Arrondissement getArrondissement(CSVRecord csvRecord) {
+        return new Arrondissement.Builder()
+                .codePostal(csvRecord.get(CODE_OFFICIEL_ARRONDISSEMENT.getLabel()))
+                .nom(csvRecord.get(NOM_OFFICIEL_ARRONDISSEMENT.getLabel()))
                 .build();
     }
 
     private static Departement getDepartementFromRecord(CSVRecord csvRecord, Region region) {
         return new Departement.Builder()
-                .codeOfficiel(csvRecord.get(CODE_OFFICIEL_DEPARTEMENT.getLabel()))
-                .nomOfficiel(csvRecord.get(NOM_OFFICIEL_DEPARTEMENT.getLabel()))
+                .code(csvRecord.get(CODE_OFFICIEL_DEPARTEMENT.getLabel()))
+                .nom(csvRecord.get(NOM_OFFICIEL_DEPARTEMENT.getLabel()))
                 .region(region)
                 .build();
     }
 
     private static Region getRegionFromRecord(CSVRecord csvRecord) {
         return new Region.Builder()
-                .codeOfficiel(csvRecord.get(CODE_OFFICIEL_REGION.getLabel()))
-                .nomOfficiel(csvRecord.get(NOM_OFFICIEL_REGION.getLabel()))
+                .code(csvRecord.get(CODE_OFFICIEL_REGION.getLabel()))
+                .nom(csvRecord.get(NOM_OFFICIEL_REGION.getLabel()))
                 .build();
     }
 

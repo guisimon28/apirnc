@@ -11,8 +11,8 @@ public class RegionJpaEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String codeOfficiel;
-    private String nomOfficiel;
+    private String code;
+    private String nom;
 
     public Long getId() {
         return id;
@@ -23,20 +23,29 @@ public class RegionJpaEntity {
     }
 
     public void update(Region region) {
-        this.codeOfficiel = region.codeOfficiel();
-        this.nomOfficiel = region.nomOfficiel();
+        this.code = region.code();
+        this.nom = region.nom();
     }
 
     public boolean isSame(Region region) {
-        return codeOfficiel.equalsIgnoreCase(region.codeOfficiel());
+        return code.equalsIgnoreCase(region.code());
+    }
+
+    public Region convertToDomain() {
+        return new Region.Builder()
+                .code(code)
+                .nom(nom)
+                .build();
     }
 
     @Override
     public String toString() {
         return "RegionJpaEntity{" +
                 "id=" + id +
-                ", codeOfficiel='" + codeOfficiel + '\'' +
-                ", nomOfficiel='" + nomOfficiel + '\'' +
+                ", code='" + code + '\'' +
+                ", nom='" + nom + '\'' +
                 '}';
     }
+
+
 }

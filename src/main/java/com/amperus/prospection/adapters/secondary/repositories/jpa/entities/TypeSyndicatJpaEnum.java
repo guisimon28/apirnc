@@ -15,4 +15,13 @@ public enum TypeSyndicatJpaEnum {
             default -> TypeSyndicatJpaEnum.INCONNU;
         };
     }
+
+    public static TypeSyndicat convertToDomain(TypeSyndicatJpaEnum type) {
+        return switch (type) {
+            case null -> null;
+            case TypeSyndicatJpaEnum.BENEVOLE -> TypeSyndicat.BENEVOLE;
+            case TypeSyndicatJpaEnum.PROFESSIONNEL -> TypeSyndicat.PROFESSIONNEL;
+            default -> TypeSyndicat.INCONNU;
+        };
+    }
 }

@@ -42,20 +42,19 @@ class CoproprieteTestDataFactory {
     }
 
     public static Ville.Builder aVille() {
-        Region region = new Region.Builder().codeOfficiel("R123").nomOfficiel("Région A").build();
-        Departement departement = new Departement.Builder().codeOfficiel("D123").nomOfficiel("Département A").region(region).build();
+        Region region = new Region.Builder().code("R123").nom("Région A").build();
+        Departement departement = new Departement.Builder().code("D123").nom("Département A").region(region).build();
         return new Ville.Builder()
-                .codeOfficiel("12345")
-                .nomOfficiel("Ville A")
-                .codeOfficielArrondissement("A1")
-                .nomOfficielArrondissement("Arrondissement 1")
+                .codePostal("12345")
+                .nom("Ville A")
+                .arrondissement(new Arrondissement.Builder().nom("Arrondissement 1").codePostal("A1").build())
                 .departement(departement);
     }
 
     public static Adresse.Builder anAdresse() {
         return new Adresse.Builder()
                 .numeroEtVoie("123 Rue de la Copropriété")
-                .codePostal("75000")
+                .codePostal("12345")
                 .coordonneesGeographiques(new CoordonneesGeographiques(-122.254775, 37.869085))
                 .ville(aVille().build());
     }

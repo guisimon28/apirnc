@@ -1,16 +1,14 @@
 package com.amperus.prospection.adapters.secondary.repositories.jpa.entities;
 
 
-import com.amperus.prospection.businesslogic.models.Adresse;
-import com.amperus.prospection.businesslogic.models.Caracteristique;
-import com.amperus.prospection.businesslogic.models.Copropriete;
-import com.amperus.prospection.businesslogic.models.Lots;
+import com.amperus.prospection.businesslogic.models.*;
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Entity(name = "coproprietes")
@@ -116,6 +114,55 @@ public class CoproprieteJpaEntity {
             mandats = new ArrayList<>();
         }
         mandats.add(mandat);
+    }
+
+    public Copropriete convertToDomain() {
+        var builder = new Copropriete.Builder()
+                .numeroImmatriculation(numeroImmatriculation)
+                .nomUsage(nomUsage)
+                .lots(convertToLots().build())
+                .informationsCadastrales(convertToInformationCadastrales())
+                .adresse(convertToAdresse())
+                .caracteristique(convertToCaracteristique().build());
+        convertToMandat().ifPresent(builder::mandat);
+        return builder.build();
+    }
+
+    Lots.Builder convertToLots() {
+        return new Lots.Builder()
+                .nombreTotal(nombreLotTotal)
+                .nombreUsageHabitationBureauxCommerces(nombreLotUsageHabitationBureauxCommerces)
+                .nombreUsageHabitation(nombreLotUsageHabitation)
+                .nombreStationnement(nombreLotStationnement);
+    }
+
+    Caracteristique.Builder convertToCaracteristique() {
+        return new Caracteristique.Builder()
+                .dateReglement(dateReglement)
+                .residenceService(residenceService)
+                .periodeConstruction(PeriodeConstructionRangeJpaEnum.convertToDomain(periodeConstruction))
+                .dansActionCoeurDeVille(dansActionCoeurDeVille)
+                .dansPetiteVilleDeDemain(dansPetiteVilleDeDemain)
+                .aidee(aidee);
+    }
+
+    List<InformationCadastrale> convertToInformationCadastrales() {
+        return informationsCadastrales.stream().map(InformationCadastraleJpaEntity::convertToDomain).toList();
+    }
+
+    Optional<Mandat> convertToMandat() {
+        return mandats.stream().findFirst().map(MandatJpaEntity::convertToDomain);
+    }
+
+    Adresse convertToAdresse() {
+        Adresse.Builder builder = new Adresse.Builder();
+        if (ville != null) {
+            builder = ville.convertToDomain();
+        }
+        if (adresse != null) {
+            adresse.completeBuilder(builder);
+        }
+        return builder.build();
     }
 
     @Override

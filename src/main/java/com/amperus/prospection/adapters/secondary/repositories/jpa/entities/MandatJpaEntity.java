@@ -38,6 +38,13 @@ public class MandatJpaEntity {
         this.statut = MandatStatutJpaEnum.convertFromModel(mandat.statut());
     }
 
+    public Mandat convertToDomain() {
+        return new Mandat.Builder()
+                .statut(MandatStatutJpaEnum.convertToDomain(statut))
+                .syndicat(syndicat.convertToDomain())
+                .build();
+    }
+
     @Override
     public String toString() {
         return "MandatJpaEntity{" +

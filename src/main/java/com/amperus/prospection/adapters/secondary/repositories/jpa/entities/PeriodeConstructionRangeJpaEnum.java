@@ -25,4 +25,18 @@ public enum PeriodeConstructionRangeJpaEnum {
             default -> PeriodeConstructionRangeJpaEnum.INCONNUE;
         };
     }
+
+    public static PeriodeConstructionRange convertToDomain(PeriodeConstructionRangeJpaEnum periodeConstructionRangeJpa) {
+        return switch (periodeConstructionRangeJpa) {
+            case null -> null;
+            case PeriodeConstructionRangeJpaEnum.AVANT_1949 -> PeriodeConstructionRange.AVANT_1949;
+            case PeriodeConstructionRangeJpaEnum.DE_1949_A_1960 -> PeriodeConstructionRange.DE_1949_A_1960;
+            case PeriodeConstructionRangeJpaEnum.DE_1961_A_1974 -> PeriodeConstructionRange.DE_1961_A_1974;
+            case PeriodeConstructionRangeJpaEnum.DE_1975_A_1993 -> PeriodeConstructionRange.DE_1975_A_1993;
+            case PeriodeConstructionRangeJpaEnum.DE_1994_A_2000 -> PeriodeConstructionRange.DE_1994_A_2000;
+            case PeriodeConstructionRangeJpaEnum.DE_2001_A_2010 -> PeriodeConstructionRange.DE_2001_A_2010;
+            case PeriodeConstructionRangeJpaEnum.A_COMPTER_2011 -> PeriodeConstructionRange.A_COMPTER_2011;
+            default -> PeriodeConstructionRange.INCONNUE;
+        };
+    }
 }

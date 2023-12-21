@@ -1,6 +1,7 @@
 package com.amperus.prospection.adapters.secondary.repositories.jpa.entities;
 
 import com.amperus.prospection.businesslogic.models.Adresse;
+import com.amperus.prospection.businesslogic.models.CoordonneesGeographiques;
 import jakarta.persistence.Embeddable;
 
 @Embeddable
@@ -20,6 +21,7 @@ public class AdresseJpaEntity {
         this.numeroEtVoie = numeroEtVoie;
     }
 
+
     public String getNumeroEtVoieGpx() {
         return numeroEtVoieGpx;
     }
@@ -34,6 +36,11 @@ public class AdresseJpaEntity {
             this.latitude = adresse.coordonneesGeographiques().latitude();
             this.longitude = adresse.coordonneesGeographiques().longitude();
         }
+    }
+
+    void completeBuilder(Adresse.Builder builder) {
+        builder.coordonneesGeographiques(new CoordonneesGeographiques.Builder().latitude(latitude).longitude(longitude).build())
+                .numeroEtVoie(numeroEtVoie);
     }
 
     @Override

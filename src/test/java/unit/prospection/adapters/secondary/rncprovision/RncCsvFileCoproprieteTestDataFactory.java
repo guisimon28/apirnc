@@ -42,19 +42,18 @@ class RncCsvFileCoproprieteTestDataFactory {
     }
 
     public static Ville.Builder aVille() {
-        Region region = new Region.Builder().codeOfficiel("84").nomOfficiel("Auvergne-Rhône-Alpes").build();
-        Departement departement = new Departement.Builder().codeOfficiel("69").nomOfficiel("Rhône").region(region).build();
+        Region region = new Region.Builder().code("84").nom("Auvergne-Rhône-Alpes").build();
+        Departement departement = new Departement.Builder().code("69").nom("Rhône").region(region).build();
         return new Ville.Builder()
-                .codeOfficiel("69094")
-                .nomOfficiel("Grézieu-la-Varenne")
-                .codeOfficielArrondissement("69094")
-                .nomOfficielArrondissement("Grézieu-la-Varenne")
+                .codePostal("69290")
+                .nom("Grézieu-la-Varenne")
+                .arrondissement(new Arrondissement.Builder().nom("Grézieu-la-Varenne").codePostal("69094").build())
                 .departement(departement);
     }
 
     public static Adresse.Builder anAdresse() {
         return new Adresse.Builder()
-                .numeroEtVoie("1 r des forges")
+                .numeroEtVoie("1 Rue des Forges")
                 .codePostal("69290")
                 .ville(aVille().build())
                 .coordonneesGeographiques(aCoordonneesGeographiques().build());

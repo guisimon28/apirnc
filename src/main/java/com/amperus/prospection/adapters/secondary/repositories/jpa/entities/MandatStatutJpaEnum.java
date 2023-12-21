@@ -17,4 +17,14 @@ public enum MandatStatutJpaEnum {
             default -> MandatStatutJpaEnum.PAS_DE_MANDAT_EN_COURS;
         };
     }
+
+    public static MandatStatut convertToDomain(MandatStatutJpaEnum statut) {
+        return switch (statut) {
+            case null -> null;
+            case MandatStatutJpaEnum.MANDAT_EN_COURS -> MandatStatut.MANDAT_EN_COURS;
+            case MandatStatutJpaEnum.MANDAT_EXPIRE_SANS_SUCCESSEUR_DECLARE -> MandatStatut.MANDAT_EXPIRE_SANS_SUCCESSEUR_DECLARE;
+            case MandatStatutJpaEnum.MANDAT_EXPIRE_AVEC_SUCCESSEUR_DECLARE -> MandatStatut.MANDAT_EXPIRE_AVEC_SUCCESSEUR_DECLARE;
+            default -> MandatStatut.PAS_DE_MANDAT_EN_COURS;
+        };
+    }
 }

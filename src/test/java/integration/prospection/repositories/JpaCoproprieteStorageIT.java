@@ -72,6 +72,16 @@ class JpaCoproprieteStorageIT extends BaseIntegration {
                 .isEqualTo(fakeStreet);
     }
 
+    @Test
+    void should_find_by_numero_immatriculation_when_search() {
+        Copropriete copropriete = CoproprieteTestDataFactory.aCopropriete().build();
+        jpaCoproprieteStorage.saveAll(List.of(copropriete));
+
+        assertThat(jpaCoproprieteStorage.findByNumeroImmatriculation(copropriete.numeroImmatriculation()))
+                .isPresent().get().usingRecursiveComparison(configCopropriete)
+                .isEqualTo(copropriete);
+    }
+
     private CoproprieteJpaEntity convertToJpa(Copropriete copropriete) {
         CoproprieteJpaEntity coproprieteJpaEntity = new CoproprieteJpaEntity();
         coproprieteJpaEntity.update(copropriete);

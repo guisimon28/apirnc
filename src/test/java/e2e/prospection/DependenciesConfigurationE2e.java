@@ -6,6 +6,7 @@ import com.amperus.prospection.businesslogic.gateways.banprovision.BanDataProvid
 import com.amperus.prospection.businesslogic.gateways.repositories.CoproprieteRepository;
 import com.amperus.prospection.businesslogic.gateways.rncDataProvision.RncDataProvider;
 import com.amperus.prospection.businesslogic.usecases.CompleterNumeroEtVoie;
+import com.amperus.prospection.businesslogic.usecases.GetCopropriete;
 import com.amperus.prospection.businesslogic.usecases.ImportRegistreNationalCopropriete;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -31,6 +32,11 @@ public class DependenciesConfigurationE2e {
     @Bean
     public CompleterNumeroEtVoie completeMissingStreet(BanDataProvider banDataProvider, CoproprieteRepository coproprieteRepository) {
         return new CompleterNumeroEtVoie(banDataProvider, coproprieteRepository);
+    }
+    
+    @Bean
+    public GetCopropriete getCopropriete(CoproprieteRepository coproprieteRepository) {
+        return new GetCopropriete(coproprieteRepository);
     }
 
     @Bean
