@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class JpaCoproprieteStorage implements CoproprieteRepository {
@@ -90,6 +91,12 @@ public class JpaCoproprieteStorage implements CoproprieteRepository {
     @Override
     public void updateNumeroEtVoie(String numeroImmatriculation, String street) {
         springCoproprieteRepository.updateNumeroEtVoieForNumeroImmatriculation(street, numeroImmatriculation);
+    }
+
+    @Override
+    public Optional<Copropriete> findByNumeroImmatriculation(String numeroImmatriculation) {
+        var jpaEntity = springCoproprieteRepository.findByNumeroImmatriculation(numeroImmatriculation);
+        return jpaEntity.map(CoproprieteJpaEntity::convertToDomain);
     }
 
 }

@@ -1,0 +1,18 @@
+package com.amperus.prospection.businesslogic.usecases;
+
+import com.amperus.prospection.businesslogic.gateways.repositories.CoproprieteRepository;
+import com.amperus.prospection.businesslogic.models.Copropriete;
+
+import java.util.Optional;
+
+public class GetCopropriete {
+    private final CoproprieteRepository coproprieteRepository;
+
+    public GetCopropriete(CoproprieteRepository coproprieteRepository) {
+        this.coproprieteRepository = coproprieteRepository;
+    }
+
+    public Optional<Copropriete> byNumeroImmatriculation(String numeroImmatriculation) {
+        return coproprieteRepository.findByNumeroImmatriculation(numeroImmatriculation);
+    }
+}

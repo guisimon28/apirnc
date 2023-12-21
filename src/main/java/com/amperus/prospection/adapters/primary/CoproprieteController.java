@@ -1,12 +1,12 @@
 package com.amperus.prospection.adapters.primary;
 
+import com.amperus.prospection.businesslogic.models.Copropriete;
 import com.amperus.prospection.businesslogic.usecases.CompleterNumeroEtVoie;
+import com.amperus.prospection.businesslogic.usecases.GetCopropriete;
 import com.amperus.prospection.businesslogic.usecases.ImportRegistreNationalCopropriete;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/coproprietes")
@@ -15,9 +15,12 @@ public class CoproprieteController {
 
     private final CompleterNumeroEtVoie completerNumeroEtVoie;
 
-    public CoproprieteController(ImportRegistreNationalCopropriete importRegistreNationalCopropriete, CompleterNumeroEtVoie completerNumeroEtVoie) {
+    private final GetCopropriete getCopropriete;
+
+    public CoproprieteController(ImportRegistreNationalCopropriete importRegistreNationalCopropriete, CompleterNumeroEtVoie completerNumeroEtVoie, GetCopropriete getCopropriete) {
         this.importRegistreNationalCopropriete = importRegistreNationalCopropriete;
         this.completerNumeroEtVoie = completerNumeroEtVoie;
+        this.getCopropriete = getCopropriete;
     }
 
     @PostMapping(path = "/import")
@@ -30,5 +33,12 @@ public class CoproprieteController {
     public ResponseEntity<Void> completeMissingStreet() {
         completerNumeroEtVoie.handle();
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @GetMapping(path = "/find/{numeroImmatriculation}")
+    public ResponseEntity<Copropriete> findByNumeroImmatriculation(@PathVariable String numeroImmatriculation) {
+        return getCopropriete.byNumeroImmatriculation(numeroImmatriculation)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 }

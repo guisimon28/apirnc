@@ -42,7 +42,11 @@ public class InMemoriesCoproprieteRepositoryStub implements CoproprieteRepositor
 			Copropriete newCopropriete = new Copropriete.Builder().copropriete(copropriete).adresse(newAdresse).build();
 			coproprieteByImmatriculation.put(newCopropriete.numeroImmatriculation(), newCopropriete);
 		}
+	}
 
+	@Override
+	public Optional<Copropriete> findByNumeroImmatriculation(String numeroImmatriculation) {
+		return Optional.ofNullable(coproprieteByImmatriculation.get(numeroImmatriculation));
 	}
 
 	// SECRET METHOD
