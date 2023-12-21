@@ -4,6 +4,7 @@ import com.amperus.prospection.businesslogic.gateways.rncDataProvision.RncDataPr
 import com.amperus.prospection.businesslogic.models.*;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -141,10 +142,14 @@ public class CsvFileRncDataProvider implements RncDataProvider {
                 .coordonneesGeographiques(getCoordonneesGeographiques(csvRecord));
 
         var referenceAdresse = AddressExtractorUtils.extractAddress(csvRecord.get(ADRESSE_REFERENCE.getLabel()));
-        if (referenceAdresse.isComplete()) {
+        if (StringUtils.isNotBlank(referenceAdresse.numeroEtVoie())) {
             address.numeroEtVoie(referenceAdresse.numeroEtVoie());
+        }
+        if (StringUtils.isNotBlank(referenceAdresse.codePostal())) {
             villeBuilder.codePostal(referenceAdresse.codePostal());
-            villeBuilder.nom(referenceAdresse.ville().nom());
+            if (referenceAdresse.ville() != null) {
+                villeBuilder.nom(referenceAdresse.ville().nom());
+            }
         }
         address.ville(villeBuilder.build());
         return address.build();

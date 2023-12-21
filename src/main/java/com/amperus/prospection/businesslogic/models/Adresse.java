@@ -1,7 +1,5 @@
 package com.amperus.prospection.businesslogic.models;
 
-import org.apache.commons.lang3.ObjectUtils;
-
 public record Adresse(
 		String numeroEtVoie,
 		String codePostal,
@@ -37,10 +35,6 @@ public record Adresse(
 		public Adresse build() {
 			return new Adresse(numeroEtVoie, codePostal, ville, coordonneesGeographiques);
 		}
-	}
-
-	public boolean isComplete() {
-		return ObjectUtils.allNotNull(numeroEtVoie, codePostal, ville);
 	}
 
 }

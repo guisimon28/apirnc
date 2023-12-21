@@ -1,8 +1,5 @@
 package com.amperus.prospection.businesslogic.models;
 
-import java.util.Arrays;
-import java.util.Optional;
-
 public enum PeriodeConstructionRange {
 
     AVANT_1949("Avant 1949"),
@@ -22,11 +19,5 @@ public enum PeriodeConstructionRange {
 
     public String getLabel() {
         return label;
-    }
-
-    public static Optional<PeriodeConstructionRange> findFromLabel(String labelToFind) {
-        return Arrays.stream(PeriodeConstructionRange.values())
-                .filter(periode -> periode.getLabel().equalsIgnoreCase(labelToFind))
-                .findFirst();
     }
 }
