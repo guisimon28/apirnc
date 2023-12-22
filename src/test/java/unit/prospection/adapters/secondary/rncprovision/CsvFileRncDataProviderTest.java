@@ -1,6 +1,7 @@
 package unit.prospection.adapters.secondary.rncprovision;
 
 import com.amperus.prospection.adapters.secondary.rncprovision.CsvFileRncDataProvider;
+import com.amperus.prospection.businesslogic.models.Adresse;
 import com.amperus.prospection.businesslogic.models.Copropriete;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,7 +24,15 @@ class CsvFileRncDataProviderTest {
     @Test
     void should_have_valid_data_when_parsing_rnc_csv_file() {
         List<Copropriete> coproprietes = rncDataProvider.findAllCopropriete();
-        assertThat(coproprietes).hasSize(3)
-                .contains(RncCsvFileCoproprieteTestDataFactory.aCopropriete().build());
+        assertThat(coproprietes).hasSize(8)
+                .contains(RncCsvFileCoproprieteTestDataFactory.aCopropriete().build())
+                .extracting(Copropriete::adresse)
+                .extracting(Adresse::numeroEtVoie)
+                .containsExactly("1 Rue des Forges", "15 Rue de Trion", "2 Rue Paul Claudel",
+                        "Station Puy Saint Vincent 1600",
+                        "LE Cannet (06110) 79 Bis de Route de Valbonne",
+                        "66150 Arles SUR Tech 6 Camp de la Teuleria",
+                        "25/27 Rue Chaubert 1046 à 1078 Rue D'ivoy",
+                        "35-37-39 Rue Malvoisine");
     }
 }

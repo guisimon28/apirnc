@@ -2,15 +2,13 @@ package com.amperus.prospection.adapters.secondary.repositories.jpa.entities;
 
 import com.amperus.prospection.businesslogic.models.Syndicat;
 import jakarta.persistence.*;
-import org.hibernate.annotations.GenericGenerator;
 
 import java.util.UUID;
 
 @Entity(name = "syndicats")
 public class SyndicatJpaEntity {
     @Id
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "uuid2")
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     @Enumerated(EnumType.STRING)
     private TypeSyndicatJpaEnum type;

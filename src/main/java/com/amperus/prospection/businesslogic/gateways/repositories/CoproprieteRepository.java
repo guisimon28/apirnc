@@ -9,9 +9,5 @@ public interface CoproprieteRepository {
 
 	void saveAll(List<Copropriete> copropriete);
 
-    List<CoproprieteGeoLocalisation> findAllWithMissingNumeroEtVoie();
-
-    void updateNumeroEtVoie(String numeroImmatriculation, String street);
-
     Optional<Copropriete> findByNumeroImmatriculation(String numeroImmatriculation);
 }

@@ -11,7 +11,7 @@ public class AddressFormatterUtils {
     private static final String TILDE = "-";
     private static final String COMMA = ",";
     private static final Set<String> NON_CAPITALIZED_WORDS = Set.of(
-            "le", "la", "l'", "du", "de", "des", "à", "les", "sur"
+            "le", "la", "l'", "du", "de", "des", "à", "les", "sur", "en"
     );
 
     private AddressFormatterUtils() {
@@ -35,8 +35,26 @@ public class AddressFormatterUtils {
                 .trim();
     }
 
+    /**
+     * Formate une ville en supprimant les virgules,
+     * et en appliquant la capitalisation
+     *
+     * @param city La ville à formater.
+     * @return La ville formatée.
+     */
+    public static String formatCity(String city) {
+        if (city == null) {
+            return "";
+        }
+        return Arrays.stream(city.split(SEPARATOR))
+                .map(AddressFormatterUtils::capitalizeIfNeeded)
+                .collect(Collectors.joining(SEPARATOR))
+                .replace(COMMA, "")
+                .trim();
+    }
+
     private static String capitalizeIfNeeded(String word) {
-        return shouldCapitalize(word) ? capitalizeFully(word) : word;
+        return shouldCapitalize(word) ? capitalizeFully(word) : word.toLowerCase();
     }
 
     private static boolean shouldCapitalize(String word) {

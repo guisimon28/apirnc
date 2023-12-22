@@ -56,8 +56,10 @@ class AddressFormatterTest {
                 Arguments.of("18 r saint-gabriel 13014 Marseille", convertToAddress("18 Rue Saint-Gabriel", "13014", "Marseille")),
                 Arguments.of("r du couvent, 40480 Vieux-Boucau-les-Bains", convertToAddress("Rue du Couvent", "40480", "Vieux-Boucau-les-Bains")),
                 Arguments.of("32 RUE MAURICE BERNARD", convertToAddress("32 Rue Maurice Bernard", null, null)),
-                Arguments.of("2 rue paul claudel 02400", convertToAddress("2 Rue Paul Claudel", null, null)),
-                Arguments.of("25 bd carabacel 6000 NICE", convertToAddress("25 Boulevard Carabacel", "06000", "Nice"))
+                Arguments.of("2 rue paul claudel 02400", convertToAddress("2 Rue Paul Claudel 02400", null, null)),
+                Arguments.of("25 bd carabacel 6000 NICE", convertToAddress("25 Boulevard Carabacel", "06000", "Nice")),
+                Arguments.of("1200 rte d'espagne, 65170 Bourisp", convertToAddress("1200 Route D'espagne", "65170", "Bourisp")),
+                Arguments.of("190 bd du 8 mai 1945 1000 BOURG EN BRESSE", convertToAddress("190 Boulevard du 8 Mai", "01000", "Bourg en Bresse"))
         );
     }
 

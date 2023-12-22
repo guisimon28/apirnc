@@ -3,7 +3,6 @@ package com.amperus.prospection.adapters.secondary.repositories.jpa.entities;
 
 import com.amperus.prospection.businesslogic.models.*;
 import jakarta.persistence.*;
-import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -14,8 +13,7 @@ import java.util.UUID;
 @Entity(name = "coproprietes")
 public class CoproprieteJpaEntity {
     @Id
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "uuid2")
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private String numeroImmatriculation;
     private String nomUsage;

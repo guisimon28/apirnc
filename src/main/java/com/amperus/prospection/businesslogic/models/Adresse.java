@@ -1,5 +1,7 @@
 package com.amperus.prospection.businesslogic.models;
 
+import org.apache.commons.lang3.StringUtils;
+
 public record Adresse(
 		String numeroEtVoie,
 		String codePostal,
@@ -37,4 +39,7 @@ public record Adresse(
 		}
 	}
 
+	public boolean isComplete() {
+		return StringUtils.isNoneBlank(numeroEtVoie, codePostal);
+	}
 }

@@ -7,8 +7,6 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.amperus.prospection.adapters.secondary.rncprovision.AddressFormatterUtils.formatAddress;
-
 public class AddressExtractorUtils {
 
     private AddressExtractorUtils() {
@@ -21,18 +19,17 @@ public class AddressExtractorUtils {
      * @return un objet Adresse contenant les informations extraites.
      */
     public static Adresse extractAddress(String address) {
-        var formattedAddress = formatAddress(address);
-        Pattern pattern = Pattern.compile("(?<street>.*?)(?<postalCode>\\d{4,5})(?<city>.*)");
-        Matcher matcher = pattern.matcher(formattedAddress);
+        Pattern pattern = Pattern.compile("(?<street>[^\\d]+?.+?)(?:\\s+(\\d{4,5})\\s+)?(?<postalCode>\\d{4,5})\\s+(?<city>.+)");
+        Matcher matcher = pattern.matcher(address);
 
         var builder = new Adresse.Builder();
         if (matcher.find()) {
-            builder.numeroEtVoie(matcher.group("street").trim());
+            builder.numeroEtVoie(AddressFormatterUtils.formatAddress(matcher.group("street").trim()));
             var postalCode = matcher.group("postalCode").trim();
-            var city = matcher.group("city").trim();
+            var city = AddressFormatterUtils.formatCity(matcher.group("city").trim());
             completeBuilderByPostCodeAndCity(postalCode, city, builder);
         } else {
-            builder.numeroEtVoie(formattedAddress);
+            builder.numeroEtVoie(AddressFormatterUtils.formatAddress(address));
         }
         return builder.build();
     }
@@ -43,7 +40,7 @@ public class AddressExtractorUtils {
             builder.codePostal(postCodeFormated);
             var villeBuilder = new Ville.Builder()
                     .codePostal(postCodeFormated)
-                    .nom(city);
+                    .nom(AddressFormatterUtils.formatCity(city));
             builder.ville(villeBuilder.build());
         }
     }

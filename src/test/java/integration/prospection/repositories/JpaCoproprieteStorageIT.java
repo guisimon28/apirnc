@@ -3,7 +3,6 @@ package integration.prospection.repositories;
 import com.amperus.prospection.adapters.secondary.repositories.jpa.JpaCoproprieteStorage;
 import com.amperus.prospection.adapters.secondary.repositories.jpa.SpringCoproprieteRepository;
 import com.amperus.prospection.adapters.secondary.repositories.jpa.entities.*;
-import com.amperus.prospection.businesslogic.gateways.repositories.CoproprieteGeoLocalisation;
 import com.amperus.prospection.businesslogic.models.*;
 import integration.prospection.BaseIntegration;
 import org.assertj.core.api.recursive.comparison.RecursiveComparisonConfiguration;
@@ -36,40 +35,6 @@ class JpaCoproprieteStorageIT extends BaseIntegration {
         assertThat(coproprietes)
                 .usingRecursiveFieldByFieldElementComparator(configCopropriete)
                 .containsExactly(convertToJpa(copropriete));
-    }
-
-    @Test
-    void should_select_copropriete_with_missing_street_when_query_select_data() {
-        Copropriete copropriete = CoproprieteTestDataFactory.aCoproprieteWithEmptyStreet().build();
-        CoproprieteJpaEntity coproprieteJpaEntity = new CoproprieteJpaEntity();
-        coproprieteJpaEntity.update(copropriete);
-        springCoproprieteRepository.save(coproprieteJpaEntity);
-
-        var withMissingNumeroEtVoie = jpaCoproprieteStorage.findAllWithMissingNumeroEtVoie();
-
-        assertThat(withMissingNumeroEtVoie)
-                .hasSize(1)
-                .first()
-                .extracting(CoproprieteGeoLocalisation::getNumeroImmatriculation)
-                .isEqualTo(copropriete.numeroImmatriculation());
-    }
-
-    @Test
-    void should_update_copropriete_numeroEtVoie_when_update_copropriete() {
-        Copropriete copropriete = CoproprieteTestDataFactory.aCoproprieteWithEmptyStreet().build();
-        CoproprieteJpaEntity coproprieteJpaEntity = new CoproprieteJpaEntity();
-        coproprieteJpaEntity.update(copropriete);
-        springCoproprieteRepository.save(coproprieteJpaEntity);
-
-        var fakeStreet = "fake street";
-        springCoproprieteRepository.updateNumeroEtVoieForNumeroImmatriculation(fakeStreet, copropriete.numeroImmatriculation());
-
-        assertThat(springCoproprieteRepository.findAll())
-                .hasSize(1)
-                .first()
-                .extracting(CoproprieteJpaEntity::getAdresse)
-                .extracting(AdresseJpaEntity::getNumeroEtVoieGpx)
-                .isEqualTo(fakeStreet);
     }
 
     @Test

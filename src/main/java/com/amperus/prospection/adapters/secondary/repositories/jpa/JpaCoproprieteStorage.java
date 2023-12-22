@@ -1,7 +1,6 @@
 package com.amperus.prospection.adapters.secondary.repositories.jpa;
 
 import com.amperus.prospection.adapters.secondary.repositories.jpa.entities.*;
-import com.amperus.prospection.businesslogic.gateways.repositories.CoproprieteGeoLocalisation;
 import com.amperus.prospection.businesslogic.gateways.repositories.CoproprieteRepository;
 import com.amperus.prospection.businesslogic.models.Copropriete;
 import com.amperus.prospection.businesslogic.models.InformationCadastrale;
@@ -81,16 +80,6 @@ public class JpaCoproprieteStorage implements CoproprieteRepository {
                 .filter(m -> m.getSyndicat() != null && m.getSyndicat().isSame(syndicat))
                 .findFirst()
                 .orElseGet(MandatJpaEntity::new);
-    }
-
-    @Override
-    public List<CoproprieteGeoLocalisation> findAllWithMissingNumeroEtVoie() {
-        return springCoproprieteRepository.findAllWithMissingNumeroEtVoie();
-    }
-
-    @Override
-    public void updateNumeroEtVoie(String numeroImmatriculation, String street) {
-        springCoproprieteRepository.updateNumeroEtVoieForNumeroImmatriculation(street, numeroImmatriculation);
     }
 
     @Override

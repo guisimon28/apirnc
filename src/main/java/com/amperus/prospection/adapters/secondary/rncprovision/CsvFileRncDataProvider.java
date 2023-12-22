@@ -139,9 +139,22 @@ public class CsvFileRncDataProvider implements RncDataProvider {
         var address = new Adresse.Builder()
                 .numeroEtVoie(AddressFormatterUtils.formatAddress(csvRecord.get(NUMERO_ET_VOIE.getLabel())))
                 .codePostal(csvRecord.get(CODE_POSTAL.getLabel()))
+                .ville(villeBuilder.build())
                 .coordonneesGeographiques(getCoordonneesGeographiques(csvRecord));
 
         var referenceAdresse = AddressExtractorUtils.extractAddress(csvRecord.get(ADRESSE_REFERENCE.getLabel()));
+        if (address.build().isComplete()) {
+            villeBuilder.codePostal(csvRecord.get(CODE_POSTAL.getLabel()));
+        } else if (referenceAdresse.isComplete()) {
+            completeBuilderByReferenceAddress(referenceAdresse, address, villeBuilder);
+        } else if (StringUtils.isNotBlank(referenceAdresse.numeroEtVoie())) {
+            address.numeroEtVoie(referenceAdresse.numeroEtVoie());
+        }
+        address.ville(villeBuilder.build());
+        return address.build();
+    }
+
+    private static void completeBuilderByReferenceAddress(Adresse referenceAdresse, Adresse.Builder address, Ville.Builder villeBuilder) {
         if (StringUtils.isNotBlank(referenceAdresse.numeroEtVoie())) {
             address.numeroEtVoie(referenceAdresse.numeroEtVoie());
         }
@@ -150,9 +163,8 @@ public class CsvFileRncDataProvider implements RncDataProvider {
             if (referenceAdresse.ville() != null) {
                 villeBuilder.nom(referenceAdresse.ville().nom());
             }
+            address.ville(villeBuilder.build());
         }
-        address.ville(villeBuilder.build());
-        return address.build();
     }
 
     private CoordonneesGeographiques getCoordonneesGeographiques(CSVRecord csvRecord) {

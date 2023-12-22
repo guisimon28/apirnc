@@ -1,6 +1,7 @@
 package com.amperus.prospection.adapters.secondary.repositories.jpa.entities;
 
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.UUID;
 
 public class MandatIdClass implements Serializable {
@@ -21,5 +22,18 @@ public class MandatIdClass implements Serializable {
 
     public void setSyndicat(UUID syndicat) {
         this.syndicat = syndicat;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MandatIdClass that = (MandatIdClass) o;
+        return Objects.equals(copropriete, that.copropriete) && Objects.equals(syndicat, that.syndicat);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(copropriete, syndicat);
     }
 }
