@@ -1,6 +1,7 @@
 package com.amperus.prospection.adapters.primary;
 
 import com.amperus.prospection.businesslogic.models.Copropriete;
+import com.amperus.prospection.businesslogic.models.pagination.MyAppPage;
 import com.amperus.prospection.businesslogic.usecases.GetCopropriete;
 import com.amperus.prospection.businesslogic.usecases.ImportRegistreNationalCopropriete;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,19 @@ public class CoproprieteController {
     public ResponseEntity<Void> importerRegistre() {
         importRegistreNationalCopropriete.handle();
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @GetMapping(path = "/find")
+    public ResponseEntity<RestMyAppPage<Copropriete>> find(@ModelAttribute RestMyAppPageable restMyAppPageable) {
+        MyAppPage<Copropriete> coproprietes = getCopropriete.findAllCoproprietes(restMyAppPageable.toPageable());
+        RestMyAppPage restMyAppPage = new RestMyAppPage.Builder(coproprietes.getContent())
+                .pageSize(coproprietes.getPageSize())
+                .pageCount(coproprietes.getPageCount())
+                .currentPage(coproprietes.getCurrentPage())
+                .totalElementsCount(coproprietes.getTotalElementsCount())
+                .build();
+
+        return ResponseEntity.ok(restMyAppPage);
     }
 
     @GetMapping(path = "/find/{numeroImmatriculation}")

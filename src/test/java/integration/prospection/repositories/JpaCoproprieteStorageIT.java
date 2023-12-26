@@ -4,6 +4,8 @@ import com.amperus.prospection.adapters.secondary.repositories.jpa.JpaCopropriet
 import com.amperus.prospection.adapters.secondary.repositories.jpa.SpringCoproprieteRepository;
 import com.amperus.prospection.adapters.secondary.repositories.jpa.entities.*;
 import com.amperus.prospection.businesslogic.models.*;
+import com.amperus.prospection.businesslogic.models.pagination.MyAppPage;
+import com.amperus.prospection.businesslogic.models.pagination.MyAppPageable;
 import integration.prospection.BaseIntegration;
 import org.assertj.core.api.recursive.comparison.RecursiveComparisonConfiguration;
 import org.junit.jupiter.api.Test;
@@ -45,6 +47,15 @@ class JpaCoproprieteStorageIT extends BaseIntegration {
         assertThat(jpaCoproprieteStorage.findByNumeroImmatriculation(copropriete.numeroImmatriculation()))
                 .isPresent().get().usingRecursiveComparison(configCopropriete)
                 .isEqualTo(copropriete);
+    }
+
+    @Test
+    void should_find_all_coproprietes_when_search_with_pagination() {
+        Copropriete copropriete = CoproprieteTestDataFactory.aCopropriete().build();
+        jpaCoproprieteStorage.saveAll(List.of(copropriete));
+
+        assertThat(jpaCoproprieteStorage.findAllCoproprietes(new MyAppPageable(0, 10))).usingRecursiveComparison(configCopropriete)
+                .isEqualTo(MyAppPage.builder(List.of(copropriete)).currentPage(0).pageSize(10).build());
     }
 
     private CoproprieteJpaEntity convertToJpa(Copropriete copropriete) {

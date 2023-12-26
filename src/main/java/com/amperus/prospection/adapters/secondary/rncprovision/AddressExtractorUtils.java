@@ -19,7 +19,7 @@ public class AddressExtractorUtils {
      * @return un objet Adresse contenant les informations extraites.
      */
     public static Adresse extractAddress(String address) {
-        Pattern pattern = Pattern.compile("(?<street>[^\\d]+?.+?)(?:\\s+(\\d{4,5})\\s+)?(?<postalCode>\\d{4,5})\\s+(?<city>.+)");
+        Pattern pattern = Pattern.compile("(?<street>\\d*\\s*[^\\d]+?.+?)(?:\\s+(\\d{4,5})\\s+)?(?<postalCode>\\d{4,5})\\s+(?<city>.+)");
         Matcher matcher = pattern.matcher(address);
 
         var builder = new Adresse.Builder();

@@ -6,6 +6,8 @@ import com.amperus.prospection.businesslogic.models.Copropriete;
 import com.amperus.prospection.businesslogic.models.InformationCadastrale;
 import com.amperus.prospection.businesslogic.models.Mandat;
 import com.amperus.prospection.businesslogic.models.Syndicat;
+import com.amperus.prospection.businesslogic.models.pagination.MyAppPage;
+import com.amperus.prospection.businesslogic.models.pagination.MyAppPageable;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -86,6 +88,11 @@ public class JpaCoproprieteStorage implements CoproprieteRepository {
     public Optional<Copropriete> findByNumeroImmatriculation(String numeroImmatriculation) {
         var jpaEntity = springCoproprieteRepository.findByNumeroImmatriculation(numeroImmatriculation);
         return jpaEntity.map(CoproprieteJpaEntity::convertToDomain);
+    }
+
+    @Override
+    public MyAppPage<Copropriete> findAllCoproprietes(MyAppPageable pagination) {
+        return MyAppPages.from(springCoproprieteRepository.findAll(MyAppPages.from(pagination)), CoproprieteJpaEntity::convertToDomain);
     }
 
 }
