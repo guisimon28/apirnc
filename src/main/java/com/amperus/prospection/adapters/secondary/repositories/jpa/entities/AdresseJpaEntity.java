@@ -31,10 +31,12 @@ public class AdresseJpaEntity {
     }
 
     public void update(Adresse adresse) {
-        this.numeroEtVoie = adresse.numeroEtVoie();
-        if (adresse.coordonneesGeographiques() != null) {
-            this.latitude = adresse.coordonneesGeographiques().latitude();
-            this.longitude = adresse.coordonneesGeographiques().longitude();
+        if (adresse != null) {
+            this.numeroEtVoie = adresse.numeroEtVoie();
+            if (adresse.coordonneesGeographiques() != null) {
+                this.latitude = adresse.coordonneesGeographiques().latitude();
+                this.longitude = adresse.coordonneesGeographiques().longitude();
+            }
         }
     }
 

@@ -4,6 +4,8 @@ import com.amperus.prospection.businesslogic.gateways.repositories.CoproprieteRe
 import com.amperus.prospection.businesslogic.models.Copropriete;
 import com.amperus.prospection.businesslogic.models.pagination.MyAppPage;
 import com.amperus.prospection.businesslogic.models.pagination.MyAppPageable;
+import com.amperus.prospection.businesslogic.models.pagination.MyAppSort;
+import com.amperus.prospection.businesslogic.models.pagination.MyAppSortDirection;
 import io.micrometer.common.util.StringUtils;
 
 import java.util.*;
@@ -28,7 +30,8 @@ public class InMemoriesCoproprieteRepositoryStub implements CoproprieteRepositor
 		Stream<Copropriete> stream = coproprieteByImmatriculation.values().stream();
 		stream = applyFilterIfNeeded(stream, myAppPageable.getSearchTerm());
 
-		List<Copropriete> filteredList = stream.toList();
+		Comparator<Copropriete> comparator = createComparator(myAppPageable.getSort());
+		List<Copropriete> filteredList = stream.sorted(comparator).toList();
 		int totalItems = filteredList.size();
 		int fromIndex = (myAppPageable.getPage() - 1) * myAppPageable.getPageSize();
 		int toIndex = Math.min(fromIndex + myAppPageable.getPageSize(), totalItems);
@@ -51,12 +54,36 @@ public class InMemoriesCoproprieteRepositoryStub implements CoproprieteRepositor
 				|| safeContains(c.adresse() != null && c.adresse().ville() != null ? c.adresse().ville().nom() : null, searchTerm)
 				|| safeContains(c.mandat() != null && c.mandat().syndicat() != null ? c.mandat().syndicat().raisonSociale() : null, searchTerm));
 	}
-	
+
 	private static boolean safeContains(String source, String searchTerm) {
 		if (source == null || searchTerm == null) {
 			return false;
 		}
 		return source.contains(searchTerm);
+	}
+
+	private Comparator<Copropriete> createComparator(MyAppSort myAppSort) {
+		if (myAppSort == null || myAppSort.getPath() == null) {
+			return (next, previous) -> 0;
+		}
+
+		Comparator<Copropriete> comparator = switch (myAppSort.getPath()) {
+			case "nomUsage" -> Comparator.comparing(Copropriete::nomUsage, Comparator.nullsLast(Comparator.naturalOrder()));
+			case "numeroImmatriculation" -> Comparator.comparing(Copropriete::numeroImmatriculation, Comparator.nullsLast(Comparator.naturalOrder()));
+			case "adresse" ->
+					Comparator.comparing(copropriete -> copropriete.adresse() != null ? copropriete.adresse().numeroEtVoie() : null, Comparator.nullsLast(Comparator.naturalOrder()));
+			case "ville" -> Comparator.comparing(copropriete -> copropriete.adresse() != null ? (copropriete.adresse().ville() != null ?
+					copropriete.adresse().ville().nom() : null) : null, Comparator.nullsLast(Comparator.naturalOrder()));
+			case "syndicat" -> Comparator.comparing(copropriete -> copropriete.mandat() != null ? (copropriete.mandat().syndicat() != null ?
+					copropriete.mandat().syndicat().raisonSociale() : null) : null, Comparator.nullsLast(Comparator.naturalOrder()));
+			default -> (copropriete1, copropriete2) -> 0;
+		};
+
+		if (myAppSort.getDirection() == MyAppSortDirection.DSC) {
+			comparator = comparator.reversed();
+		}
+
+		return comparator;
 	}
 
 	// SECRET METHOD

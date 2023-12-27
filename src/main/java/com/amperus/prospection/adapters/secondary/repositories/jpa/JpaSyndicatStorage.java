@@ -4,6 +4,7 @@ import com.amperus.prospection.adapters.secondary.repositories.jpa.entities.Synd
 import com.amperus.prospection.businesslogic.models.Copropriete;
 import com.amperus.prospection.businesslogic.models.Mandat;
 import com.amperus.prospection.businesslogic.models.Syndicat;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -19,6 +20,7 @@ public class JpaSyndicatStorage {
         this.springSyndicatJpaRepository = springSyndicatJpaRepository;
     }
 
+    @Transactional
     public List<SyndicatJpaEntity> updateAndGetAllSyndicats(List<Copropriete> coproprietes) {
         List<Syndicat> syndicats = coproprietes.stream().map(Copropriete::mandat)
                 .filter(Objects::nonNull).map(Mandat::syndicat)

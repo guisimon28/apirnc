@@ -10,6 +10,8 @@ public class RestMyAppPageable {
 
     private String searchTerm;
 
+    private RestMyAppSort sort;
+
     public int getPage() {
         return page;
     }
@@ -34,11 +36,20 @@ public class RestMyAppPageable {
         this.searchTerm = searchTerm;
     }
 
+    public RestMyAppSort getSort() {
+        return sort;
+    }
+
+    public void setSort(RestMyAppSort sort) {
+        this.sort = sort;
+    }
+
     public MyAppPageable toPageable() {
         return new MyAppPageable.Builder()
                 .page(page)
                 .pageSize(pageSize)
                 .searchTerm(searchTerm)
+                .sort(sort != null ? sort.toSort() : null)
                 .build();
     }
 }

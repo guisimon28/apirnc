@@ -40,7 +40,7 @@ CREATE TABLE coproprietes (
  numero_et_voie_gpx VARCHAR(255),
  latitude DOUBLE PRECISION NOT NULL,
  longitude DOUBLE PRECISION NOT NULL,
- ville_id BIGINT NULL,
+ ville_id BIGINT,
  FOREIGN KEY (ville_id) REFERENCES villes(id)
 );
 

@@ -6,6 +6,7 @@ import com.amperus.prospection.businesslogic.models.Adresse;
 import com.amperus.prospection.businesslogic.models.Copropriete;
 import com.amperus.prospection.businesslogic.models.Departement;
 import com.amperus.prospection.businesslogic.models.Ville;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -25,6 +26,7 @@ public class JpaVilleStorage {
         this.jpaDepartementStorage = jpaDepartementStorage;
     }
 
+    @Transactional
     public List<VilleJpaEntity> updateAndGetAllVilles(List<Copropriete> coproprietes) {
         List<Ville> villes = coproprietes.stream().map(Copropriete::adresse).filter(Objects::nonNull)
                 .map(Adresse::ville).filter(Objects::nonNull).toList();
@@ -56,6 +58,9 @@ public class JpaVilleStorage {
     }
 
     public Optional<VilleJpaEntity> find(Ville ville, List<VilleJpaEntity> villeJpaEntities) {
+        if (ville == null) {
+            return Optional.empty();
+        }
         return villeJpaEntities.stream().filter(v -> v.isSame(ville))
                 .findFirst();
     }

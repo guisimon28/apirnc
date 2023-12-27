@@ -88,4 +88,8 @@ class CoproprieteTestDataFactory {
                 .adresse(adresse);
     }
 
+    public static Copropriete.Builder aCoproprieteWithAnotherImmatriculation() {
+        return aCopropriete().numeroImmatriculation("78910").nomUsage("Copropriété B");
+    }
+
 }

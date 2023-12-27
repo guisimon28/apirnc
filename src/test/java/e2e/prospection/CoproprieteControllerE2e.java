@@ -47,7 +47,9 @@ class CoproprieteControllerE2e extends BaseE2e {
         coproprieteJpaEntity.update(copropriete);
         springCoproprieteRepository.save(coproprieteJpaEntity);
 
-        mvc.perform(get("/coproprietes/find"))
+        mvc.perform(get("/coproprietes/find")
+                        .param("sort.path", "nomUsage")
+                        .param("sort.direction", "ASC"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.content").isArray())

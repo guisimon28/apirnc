@@ -4,6 +4,8 @@ import com.amperus.prospection.adapters.secondary.repositories.InMemoriesCopropr
 import com.amperus.prospection.businesslogic.models.Copropriete;
 import com.amperus.prospection.businesslogic.models.pagination.MyAppPage;
 import com.amperus.prospection.businesslogic.models.pagination.MyAppPageable;
+import com.amperus.prospection.businesslogic.models.pagination.MyAppSort;
+import com.amperus.prospection.businesslogic.models.pagination.MyAppSortDirection;
 import com.amperus.prospection.businesslogic.usecases.GetCopropriete;
 import org.junit.jupiter.api.Test;
 
@@ -94,4 +96,83 @@ class GetCoproprieteTest {
         assertThat(aPage).usingRecursiveComparison().isEqualTo(MyAppPage.builder(List.of(expectedCopropriete)).currentPage(1).pageSize(10).totalElementsCount(1).build());
     }
 
+    @Test
+    void should_sort_copropriete_by_nomUsage_desc_when_search_with_pagination() {
+        var aCopropriete = aCopropriete().build();
+        var anotherCopropriete = aCoproprieteWithAnotherImmatriculation().build();
+        coproprieteRepository.setCoproprietes(aCopropriete, anotherCopropriete);
+
+        var myAppPageable = new MyAppPageable.Builder()
+                .page(1)
+                .pageSize(10)
+                .sort(new MyAppSort.Builder().path("nomUsage").direction(MyAppSortDirection.DSC).build())
+                .build();
+        var aPage = new GetCopropriete(coproprieteRepository).findAllCoproprietes(myAppPageable);
+
+        assertThat(aPage).usingRecursiveComparison().isEqualTo(MyAppPage.builder(List.of(anotherCopropriete, aCopropriete)).currentPage(1).pageSize(10).totalElementsCount(2).build());
+    }
+
+    @Test
+    void should_sort_copropriete_by_numeroImmatriculation_desc_when_search_with_pagination() {
+        var aCopropriete = aCopropriete().build();
+        var anotherCopropriete = aCoproprieteWithAnotherImmatriculation().build();
+        coproprieteRepository.setCoproprietes(aCopropriete, anotherCopropriete);
+
+        var myAppPageable = new MyAppPageable.Builder()
+                .page(1)
+                .pageSize(10)
+                .sort(new MyAppSort.Builder().path("numeroImmatriculation").direction(MyAppSortDirection.DSC).build())
+                .build();
+        var aPage = new GetCopropriete(coproprieteRepository).findAllCoproprietes(myAppPageable);
+
+        assertThat(aPage).usingRecursiveComparison().isEqualTo(MyAppPage.builder(List.of(anotherCopropriete, aCopropriete)).currentPage(1).pageSize(10).totalElementsCount(2).build());
+    }
+
+    @Test
+    void should_sort_copropriete_by_numeroEtVoie_desc_when_search_with_pagination() {
+        var aCopropriete = aCopropriete().build();
+        var anotherCopropriete = aCoproprieteWithAnotherImmatriculation().build();
+        coproprieteRepository.setCoproprietes(aCopropriete, anotherCopropriete);
+
+        var myAppPageable = new MyAppPageable.Builder()
+                .page(1)
+                .pageSize(10)
+                .sort(new MyAppSort.Builder().path("adresse").direction(MyAppSortDirection.DSC).build())
+                .build();
+        var aPage = new GetCopropriete(coproprieteRepository).findAllCoproprietes(myAppPageable);
+
+        assertThat(aPage).usingRecursiveComparison().isEqualTo(MyAppPage.builder(List.of(anotherCopropriete, aCopropriete)).currentPage(1).pageSize(10).totalElementsCount(2).build());
+    }
+
+    @Test
+    void should_sort_copropriete_by_ville_desc_when_search_with_pagination() {
+        var aCopropriete = aCopropriete().build();
+        var anotherCopropriete = aCoproprieteWithAnotherImmatriculation().build();
+        coproprieteRepository.setCoproprietes(aCopropriete, anotherCopropriete);
+
+        var myAppPageable = new MyAppPageable.Builder()
+                .page(1)
+                .pageSize(10)
+                .sort(new MyAppSort.Builder().path("ville").direction(MyAppSortDirection.DSC).build())
+                .build();
+        var aPage = new GetCopropriete(coproprieteRepository).findAllCoproprietes(myAppPageable);
+
+        assertThat(aPage).usingRecursiveComparison().isEqualTo(MyAppPage.builder(List.of(anotherCopropriete, aCopropriete)).currentPage(1).pageSize(10).totalElementsCount(2).build());
+    }
+
+    @Test
+    void should_sort_copropriete_by_syndicat_desc_when_search_with_pagination() {
+        var aCopropriete = aCopropriete().build();
+        var anotherCopropriete = aCoproprieteWithAnotherImmatriculation().build();
+        coproprieteRepository.setCoproprietes(aCopropriete, anotherCopropriete);
+
+        var myAppPageable = new MyAppPageable.Builder()
+                .page(1)
+                .pageSize(10)
+                .sort(new MyAppSort.Builder().path("syndicat").direction(MyAppSortDirection.DSC).build())
+                .build();
+        var aPage = new GetCopropriete(coproprieteRepository).findAllCoproprietes(myAppPageable);
+
+        assertThat(aPage).usingRecursiveComparison().isEqualTo(MyAppPage.builder(List.of(anotherCopropriete, aCopropriete)).currentPage(1).pageSize(10).totalElementsCount(2).build());
+    }
 }

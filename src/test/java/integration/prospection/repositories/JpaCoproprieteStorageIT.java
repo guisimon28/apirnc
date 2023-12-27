@@ -6,6 +6,7 @@ import com.amperus.prospection.adapters.secondary.repositories.jpa.entities.*;
 import com.amperus.prospection.businesslogic.models.*;
 import com.amperus.prospection.businesslogic.models.pagination.MyAppPage;
 import com.amperus.prospection.businesslogic.models.pagination.MyAppPageable;
+import com.amperus.prospection.businesslogic.models.pagination.MyAppSort;
 import integration.prospection.BaseIntegration;
 import org.assertj.core.api.recursive.comparison.RecursiveComparisonConfiguration;
 import org.junit.jupiter.api.Test;
@@ -13,7 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Function;
 
+import static com.amperus.prospection.businesslogic.models.pagination.MyAppSortDirection.DSC;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class JpaCoproprieteStorageIT extends BaseIntegration {
@@ -107,6 +110,86 @@ class JpaCoproprieteStorageIT extends BaseIntegration {
         assertThat(jpaCoproprieteStorage.findAllCoproprietes(myAppPageable)).usingRecursiveComparison(configCopropriete)
                 .isEqualTo(MyAppPage.builder(List.of(copropriete)).currentPage(1).pageSize(10).build());
     }
+
+    @Test
+    void should_sort_by_nomUsage_when_search_with_pagination_and_sorting() {
+        Copropriete aCopropriete = CoproprieteTestDataFactory.aCopropriete().build();
+        jpaCoproprieteStorage.saveAll(List.of(aCopropriete));
+        Copropriete anotherCopropriete = CoproprieteTestDataFactory.aCoproprieteWithAnotherImmatriculation().build();
+        jpaCoproprieteStorage.saveAll(List.of(anotherCopropriete));
+
+        executeSortingTest("nomUsage", Copropriete::nomUsage, anotherCopropriete.nomUsage(), aCopropriete.nomUsage());
+    }
+
+    @Test
+    void should_sort_by_numeroImmatriculation_when_search_with_pagination_and_sorting() {
+        Copropriete aCopropriete = CoproprieteTestDataFactory.aCopropriete().build();
+        jpaCoproprieteStorage.saveAll(List.of(aCopropriete));
+        Copropriete anotherCopropriete = CoproprieteTestDataFactory.aCoproprieteWithAnotherImmatriculation().build();
+        jpaCoproprieteStorage.saveAll(List.of(anotherCopropriete));
+
+        executeSortingTest("numeroImmatriculation", Copropriete::numeroImmatriculation, anotherCopropriete.numeroImmatriculation(), aCopropriete.numeroImmatriculation());
+    }
+
+    @Test
+    void should_sort_by_numeroEtVoie_when_search_with_pagination_and_sorting() {
+        Copropriete aCopropriete = CoproprieteTestDataFactory.aCopropriete().build();
+        jpaCoproprieteStorage.saveAll(List.of(aCopropriete));
+        Copropriete anotherCopropriete = CoproprieteTestDataFactory.aCoproprieteWithAnotherImmatriculation().build();
+        jpaCoproprieteStorage.saveAll(List.of(anotherCopropriete));
+
+        executeSortingTest("adresse", copropriete -> copropriete.adresse().numeroEtVoie(), anotherCopropriete.adresse().numeroEtVoie(),
+                aCopropriete.adresse().numeroEtVoie());
+    }
+
+    @Test
+    void should_sort_by_ville_when_search_with_pagination_and_sorting() {
+        Copropriete aCopropriete = CoproprieteTestDataFactory.aCopropriete().build();
+        jpaCoproprieteStorage.saveAll(List.of(aCopropriete));
+        Copropriete anotherCopropriete = CoproprieteTestDataFactory.aCoproprieteWithAnotherImmatriculation().build();
+        jpaCoproprieteStorage.saveAll(List.of(anotherCopropriete));
+
+        executeSortingTest("ville", copropriete -> copropriete.adresse().ville().nom(), anotherCopropriete.adresse().ville().nom(),
+                aCopropriete.adresse().ville().nom());
+    }
+
+
+    @Test
+    void should_sort_by_stationnement_when_search_with_pagination_and_sorting() {
+        Copropriete aCopropriete = CoproprieteTestDataFactory.aCopropriete().build();
+        jpaCoproprieteStorage.saveAll(List.of(aCopropriete));
+        Copropriete anotherCopropriete = CoproprieteTestDataFactory.aCoproprieteWithAnotherImmatriculation().build();
+        jpaCoproprieteStorage.saveAll(List.of(anotherCopropriete));
+
+        executeSortingTest("nombreStationnement", copropriete -> copropriete.lots().nombreStationnement(), anotherCopropriete.lots().nombreStationnement(),
+                aCopropriete.lots().nombreStationnement());
+    }
+
+    @Test
+    void should_sort_by_syndicat_when_search_with_pagination_and_sorting() {
+        Copropriete aCopropriete = CoproprieteTestDataFactory.aCopropriete().build();
+        jpaCoproprieteStorage.saveAll(List.of(aCopropriete));
+        Copropriete anotherCopropriete = CoproprieteTestDataFactory.aCoproprieteWithAnotherImmatriculation().build();
+        jpaCoproprieteStorage.saveAll(List.of(anotherCopropriete));
+
+        executeSortingTest("syndicat", copropriete -> copropriete.mandat().syndicat().raisonSociale(), anotherCopropriete.mandat().syndicat().raisonSociale(),
+                aCopropriete.mandat().syndicat().raisonSociale());
+    }
+
+    private void executeSortingTest(String sortPath, Function<Copropriete, Comparable<?>> extractor, Comparable<?>... expectedOrder) {
+        var myAppPageable = new MyAppPageable.Builder()
+                .page(1)
+                .pageSize(10)
+                .sort(new MyAppSort.Builder().path(sortPath).direction(DSC).build())
+                .build();
+
+        MyAppPage<Copropriete> resultPage = jpaCoproprieteStorage.findAllCoproprietes(myAppPageable);
+
+        assertThat(resultPage.getContent())
+                .extracting(extractor)
+                .containsExactly(expectedOrder);
+    }
+
 
     private CoproprieteJpaEntity convertToJpa(Copropriete copropriete) {
         CoproprieteJpaEntity coproprieteJpaEntity = new CoproprieteJpaEntity();

@@ -8,7 +8,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Testcontainers
 public abstract class TestContainers {
 
-    public static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:16.1")
+    public static final PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:16.1")
             .withPassword("inmemory")
             .withUsername("inmemory")
             .withUrlParam("stringtype", "unspecified")
