@@ -54,8 +54,58 @@ class JpaCoproprieteStorageIT extends BaseIntegration {
         Copropriete copropriete = CoproprieteTestDataFactory.aCopropriete().build();
         jpaCoproprieteStorage.saveAll(List.of(copropriete));
 
-        assertThat(jpaCoproprieteStorage.findAllCoproprietes(new MyAppPageable(0, 10))).usingRecursiveComparison(configCopropriete)
-                .isEqualTo(MyAppPage.builder(List.of(copropriete)).currentPage(0).pageSize(10).build());
+        assertThat(jpaCoproprieteStorage.findAllCoproprietes(new MyAppPageable.Builder().page(1).pageSize(10).build())).usingRecursiveComparison(configCopropriete)
+                .isEqualTo(MyAppPage.builder(List.of(copropriete)).currentPage(1).pageSize(10).build());
+    }
+
+    @Test
+    void should_find_only_by_nomUsage_when_search_with_pagination() {
+        Copropriete copropriete = CoproprieteTestDataFactory.aCopropriete().build();
+        jpaCoproprieteStorage.saveAll(List.of(copropriete));
+
+        var myAppPageable = new MyAppPageable.Builder().page(1).pageSize(10).searchTerm(copropriete.nomUsage().substring(2)).build();
+        assertThat(jpaCoproprieteStorage.findAllCoproprietes(myAppPageable)).usingRecursiveComparison(configCopropriete)
+                .isEqualTo(MyAppPage.builder(List.of(copropriete)).currentPage(1).pageSize(10).build());
+    }
+
+    @Test
+    void should_find_only_by_numeroImmatriculation_when_search_with_pagination() {
+        Copropriete copropriete = CoproprieteTestDataFactory.aCopropriete().build();
+        jpaCoproprieteStorage.saveAll(List.of(copropriete));
+
+        var myAppPageable = new MyAppPageable.Builder().page(1).pageSize(10).searchTerm(copropriete.numeroImmatriculation().substring(2)).build();
+        assertThat(jpaCoproprieteStorage.findAllCoproprietes(myAppPageable)).usingRecursiveComparison(configCopropriete)
+                .isEqualTo(MyAppPage.builder(List.of(copropriete)).currentPage(1).pageSize(10).build());
+    }
+
+    @Test
+    void should_find_only_by_numeroEtVoie_when_search_with_pagination() {
+        Copropriete copropriete = CoproprieteTestDataFactory.aCopropriete().build();
+        jpaCoproprieteStorage.saveAll(List.of(copropriete));
+
+        var myAppPageable = new MyAppPageable.Builder().page(1).pageSize(10).searchTerm(copropriete.adresse().numeroEtVoie().toUpperCase().substring(2)).build();
+        assertThat(jpaCoproprieteStorage.findAllCoproprietes(myAppPageable)).usingRecursiveComparison(configCopropriete)
+                .isEqualTo(MyAppPage.builder(List.of(copropriete)).currentPage(1).pageSize(10).build());
+    }
+
+    @Test
+    void should_find_only_by_ville_when_search_with_pagination() {
+        Copropriete copropriete = CoproprieteTestDataFactory.aCopropriete().build();
+        jpaCoproprieteStorage.saveAll(List.of(copropriete));
+
+        var myAppPageable = new MyAppPageable.Builder().page(1).pageSize(10).searchTerm(copropriete.adresse().ville().nom().toUpperCase().substring(2)).build();
+        assertThat(jpaCoproprieteStorage.findAllCoproprietes(myAppPageable)).usingRecursiveComparison(configCopropriete)
+                .isEqualTo(MyAppPage.builder(List.of(copropriete)).currentPage(1).pageSize(10).build());
+    }
+
+    @Test
+    void should_find_only_by_syndicat_when_search_with_pagination() {
+        Copropriete copropriete = CoproprieteTestDataFactory.aCopropriete().build();
+        jpaCoproprieteStorage.saveAll(List.of(copropriete));
+
+        var myAppPageable = new MyAppPageable.Builder().page(1).pageSize(10).searchTerm(copropriete.mandat().syndicat().raisonSociale().toUpperCase().substring(2)).build();
+        assertThat(jpaCoproprieteStorage.findAllCoproprietes(myAppPageable)).usingRecursiveComparison(configCopropriete)
+                .isEqualTo(MyAppPage.builder(List.of(copropriete)).currentPage(1).pageSize(10).build());
     }
 
     private CoproprieteJpaEntity convertToJpa(Copropriete copropriete) {
